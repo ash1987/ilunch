@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/ilunch/!svn/ver/24/ilunch/src/com/company/ilunch/utils
+END
+QQLoginUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/ilunch/!svn/ver/23/ilunch/src/com/company/ilunch/utils/QQLoginUtil.java
+END
+AccessTokenKeeper.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/utils/AccessTokenKeeper.java
+END
+LogUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/utils/LogUtil.java
+END
+FileUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/ilunch/!svn/ver/24/ilunch/src/com/company/ilunch/utils/FileUtils.java
+END
+WechatLoginUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/utils/WechatLoginUtil.java
+END
+Encryption.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/utils/Encryption.java
+END
+WeiBoLoginUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/utils/WeiBoLoginUtil.java
+END
+AndroidUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/utils/AndroidUtils.java
+END

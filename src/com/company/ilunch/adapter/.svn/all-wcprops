@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/ilunch/!svn/ver/20/ilunch/src/com/company/ilunch/adapter
+END
+LocationCityAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/adapter/LocationCityAdapter.java
+END
+MyOrderAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/adapter/MyOrderAdapter.java
+END
+MyLocationSectionAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/adapter/MyLocationSectionAdapter.java
+END
+MyAddressListAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/adapter/MyAddressListAdapter.java
+END
+EnSureOrderFoodListAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/adapter/EnSureOrderFoodListAdapter.java
+END
+MyLocationCityAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/adapter/MyLocationCityAdapter.java
+END
+MenuPopupAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/ilunch/!svn/ver/9/ilunch/src/com/company/ilunch/adapter/MenuPopupAdapter.java
+END
+MyFavAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/adapter/MyFavAdapter.java
+END
+MyLocationDsAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/adapter/MyLocationDsAdapter.java
+END
+MyOrdersAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/ilunch/!svn/ver/8/ilunch/src/com/company/ilunch/adapter/MyOrdersAdapter.java
+END
+MyCommentAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/adapter/MyCommentAdapter.java
+END
+ShopCartListAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/ilunch/!svn/ver/20/ilunch/src/com/company/ilunch/adapter/ShopCartListAdapter.java
+END
+BookingListAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/ilunch/!svn/ver/20/ilunch/src/com/company/ilunch/adapter/BookingListAdapter.java
+END
+HdListAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/adapter/HdListAdapter.java
+END
+MsztListAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/adapter/MsztListAdapter.java
+END

@@ -1,0 +1,155 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/ilunch/!svn/ver/24/ilunch/src/com/company/ilunch/task
+END
+UpdateAddressTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/UpdateAddressTask.java
+END
+DelCartTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/ilunch/!svn/ver/12/ilunch/src/com/company/ilunch/task/DelCartTask.java
+END
+SubmitMyOrderTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/SubmitMyOrderTask.java
+END
+UpdateCartTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/UpdateCartTask.java
+END
+AddCollectTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/AddCollectTask.java
+END
+DeleteAddressTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/DeleteAddressTask.java
+END
+LoginTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/LoginTask.java
+END
+AddMyAddressTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/AddMyAddressTask.java
+END
+GetDsTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/GetDsTask.java
+END
+DeleMyCollectTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/DeleMyCollectTask.java
+END
+ThirdLoginBindTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/ThirdLoginBindTask.java
+END
+CommentListTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/CommentListTask.java
+END
+AddMyCollectTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/AddMyCollectTask.java
+END
+GetAddressListTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/GetAddressListTask.java
+END
+AddToCartTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/AddToCartTask.java
+END
+GetInteractionListTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/GetInteractionListTask.java
+END
+FavListTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/FavListTask.java
+END
+GetShopDataTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/GetShopDataTask.java
+END
+GetOrderListTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/GetOrderListTask.java
+END
+GetSTemplateListTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/GetSTemplateListTask.java
+END
+GetCartListTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/ilunch/!svn/ver/14/ilunch/src/com/company/ilunch/task/GetCartListTask.java
+END
+GetFoodListTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/ilunch/!svn/ver/24/ilunch/src/com/company/ilunch/task/GetFoodListTask.java
+END
+GetCitysTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/GetCitysTask.java
+END
+AddInteractionTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/AddInteractionTask.java
+END
+GetSectionTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/ilunch/!svn/ver/6/ilunch/src/com/company/ilunch/task/GetSectionTask.java
+END

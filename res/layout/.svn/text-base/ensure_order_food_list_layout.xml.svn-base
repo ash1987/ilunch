@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:descendantFocusability="blocksDescendants"
+    android:padding="10dp" >
+
+    <ImageView
+        android:id="@+id/good_iv"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:id="@+id/good_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/good_iv"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/good_iv"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="越南牛肉汤粉"
+        android:textColor="#777777"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/good_num_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/good_iv"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/good_iv"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="2份"
+        android:textColor="#777777"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/good_price_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="$2"
+        android:textColor="#777777"
+        android:textSize="19sp" />
+
+</RelativeLayout>

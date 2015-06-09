@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
+    android:background="@android:color/white"
+    android:descendantFocusability="blocksDescendants"
+    android:paddingLeft="10dp"
+    android:paddingRight="-55dp" >
+
+    <RelativeLayout
+        android:id="@+id/deleteRl"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/btn_delete"
+        android:clickable="true" >
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@id/deleteRl"
+        android:layout_centerVertical="true"
+        android:descendantFocusability="blocksDescendants"
+        android:paddingRight="10dp" >
+
+        <ImageView
+            android:id="@+id/good_iv"
+            android:layout_width="40dp"
+            android:layout_centerVertical="true"
+            android:layout_height="40dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:id="@+id/good_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/good_iv"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="越南牛肉汤粉"
+            android:textColor="#777777"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:id="@+id/up_num_ib"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/btn_up_selector"
+            android:focusable="false" />
+
+        <TextView
+            android:id="@+id/num_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/number_edit_bg"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="#333333"
+            android:textSize="15sp" />
+
+        <ImageButton
+            android:id="@+id/down_num_ib"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/num_tv"
+            android:layout_centerVertical="true"
+            android:background="@drawable/btn_down_selector"
+            android:focusable="false" />
+    </RelativeLayout>
+
+</RelativeLayout>

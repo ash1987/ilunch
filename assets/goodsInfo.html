@@ -1,0 +1,256 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>商品详情</title>
+
+<link href="css/style.css" type="text/css" rel="stylesheet"/>
+<style>
+
+html {
+	background-color:#f5f5f5;
+}
+
+body {
+	font-family:"STHeiti";
+	color:#33333;
+}
+
+.arrowRight {
+	float:right;
+	display: inline-block;
+	height: 0.8em;
+	display: table-cell;
+	vertical-align: middle;
+	padding-right: 0.8em;
+}
+
+.line {
+	width: auto;
+	margin: 0 0.83em;
+	height:1px;
+	background-color:#cccccc;
+}
+
+
+</style>
+</head>
+<body>
+<div class="adsbox">
+  <div class="swipe">
+    <div id="slider">
+      <div class="sliderItem"><a href="javascript:;"><img src="images/img_loading.png" width="100%"></a></div>
+      <div class="sliderItem"><a href="javascript:;"><img src="images/img_loading.png" width="100%"></a></div>
+      <!--<div class="sliderItem"><a href="javascript:;"><img src="images/img_loading.png" width="100%"></a></div>-->
+    </div>
+    <div id="pagenavi">
+        <a href="javascript:void(0);" class="active">0</a>
+        <!--<a href="javascript:void(0);">1</a>
+        <a href="javascript:void(0);">2</a>-->
+    </div>
+  </div>
+</div>
+<div class="border">
+<h2 class="sectionHeader">产品描述</h2>
+<div class="line"></div>
+
+	<ul id="goodsInfo" class="list">
+    	<li><p>产品名称：<span id="goodsName"></span></p></li>
+        
+	</ul>
+</div>
+<script src="js/jquery-1.9.1.min.js"></script>
+<script src="js/webMutual.js"></script>
+<script type="text/javascript" src="js/touchslider.js"></script> 
+<script>
+
+	// 服务器域名或Ip
+	var BaseHost = "http://www.weetmall.com"			// 正式服务器
+	// var BaseHost = "http://114.112.83.53:8081"			// 北京测试服务器
+	// 服务器路径
+	var ServerUrl = BaseHost + "/index.php?g=Api&m=Index&a=";
+
+	var active=0,
+	as=document.getElementById('pagenavi').getElementsByTagName('a');
+	for(var i=0;i<as.length;i++){
+	(function(){
+		var j=i;
+		as[i].onclick=function(){
+			t2.slide(j);
+			return false;
+		}
+	})();
+	}
+	$('#slider').width(document.body.clientWidth*$('#slider .sliderItem').length);
+	var t2=new TouchSlider({id:'slider', speed:600, timeout:1000000, before:function(index){
+		as[active].className='';
+		active=index;
+		as[active].className='active';
+	}});
+	
+	var goodsAttr = [
+		{
+			'brand' : '品牌：',
+			'model' : '型号：',
+			'category' : '类型：',
+			'color' : '颜色分类：',
+			'voltage' : '电压：',
+			'power' : '功率：',
+			'speed' : '转速：',
+			'capacity' : '容量：',
+			'material' : '机身材质：',
+			'content' : ''
+		},
+		{
+			'brand' : '品牌：',
+			'number' : '货号：',
+			'suitable_area' : '适用面积：',
+			'technology' : '空气净化技术：',
+			'category' : '产品类别：',
+			'air_volume' : '空气净化风量：',
+			'power_mode' : '电源方式：',
+			'sale_service' : '售后服务：',
+			'environment' : '使用环境：',
+			'function' : '功能：',
+			'content' : ''
+		}
+	]
+	
+	/**
+	 * 调用服务器接口
+	 */
+	function callServerFunction(method, bodyData, succeed, failed) {
+		
+		var postData = {};
+		postData.mdata = bodyData;
+		
+		$.ajax({
+			type : 'POST',
+			async : true,
+			url : ServerUrl + method,
+			dataType : 'json',
+	//		jsonp : 'callback',
+			data : postData,
+			timeout : 30000, //超时时间设置，单位毫秒
+			/* 成功时直接返回数据 */
+			success : function(data, textStatus, jqXHR)
+			{
+				var receiveBody = data;
+				var status = parseInt(receiveBody.status);
+				if (status == 0) {
+					if (succeed) {
+						succeed(receiveBody.data, receiveBody.msg);
+					}
+				} else {
+					if (failed) {
+						failed(receiveBody.msg, receiveBody.status);
+					}
+				}
+			},
+			/* 失败时返回默认错误 */
+			error : function(jqXHR, textStatus, errorThrown)
+			{
+				if (failed) {
+					failed("网络错误");
+					failed = function () {};
+				}
+			},
+			complete : function(XMLHttpRequest,status){ //请求完成后最终执行参数
+		　　　　if(status=='timeout'){//超时,status还有success,error等值的情况
+		 　　　　　 	// ajaxTimeoutTest.abort();
+					if (failed) {
+						failed("请求超时");
+						failed = function () {};
+					}
+		　　　　}
+		　　}
+		});
+	}
+	
+	// 动态加载图片 
+	function loadImage(url, element,callback) {
+		console.log(url);
+		var val = url; 
+		var img = new Image(); 
+		img.onload = function(){ 
+			if(img.complete==true){ 
+				callback(img, element); 
+			} 
+		}        
+		//如果因为网络或图片的原因发生异常，则显示该图片 
+		// img.onerror=function(){img.src='http://www.baidu.com/img/baidu_logo.gif'} 
+		img.src=val; 
+	} 
+    
+    webMutual.platformCall = function(method, data) {
+        if (method == "GoodsInfoGot") {
+			// 添加产品图片
+			if (typeof(data.picurls) == 'object' && data.picurls.length > 0) {
+				$('#slider').empty();
+				$('#pagenavi').empty();
+				var i = 0;
+				for (var pic in data.picurls) {
+					var img = data.picurls[pic];
+					// 添加图片
+					var htmlImg = '<div class="sliderItem"><a href="javascript:;"><img id="slider_img_' + i + '" src="images/img_loading.png" alt=' + img.alt + ' width="100%"></a></div>';
+					$('#slider').append(htmlImg);
+					loadImage(img.url, ['slider_img_' + i], function (img, element) {
+						$('#'+element[0])[0].src = img.src;
+					})
+					// 添加小点
+					var htmlNav = '<a href="javascript:void(0);">' + i + '</a>'
+					$('#pagenavi').append(htmlNav);
+					i++;
+				}
+				// 刷新界面
+				$('#slider').width(document.body.clientWidth*i);
+				t2=new TouchSlider({id:'slider', speed:600, timeout:1000000, before:function(index){
+					as[active].className='';
+					active=index;
+					as[active].className='active';
+				}});
+				$('#pagenavi a:first').addClass('active');
+			}
+			
+			// 添加产品信息
+			$('#goodsInfo').empty();
+            var htmlName = '<li><p>产品名称：<span id="goodsName">' + data.name + '</span></p></li>'
+			$('#goodsInfo').append(htmlName);
+            
+			var theGoodsAttr = data.goodsAttr;		// goodsAttr[data.modelid - 1];
+			for (var attr in theGoodsAttr) {
+				var htmlAttr = '<li><p>' + theGoodsAttr[attr] + '：<span>' + data.extension[attr] + '</span></p></li>'
+				$('#goodsInfo').append(htmlAttr);
+			}
+			
+			if (data.iscash == '1') {
+
+			} else {
+				var htmlAttr = '<li><p><font color="red">该商品不支持货到付款</font></p></li><br>'
+				$('#goodsInfo').append(htmlAttr);
+			}
+            
+            var htmlAttr = '<li><p>商品详情：' + data.extension['content'] + '</p></li>'
+            $('#goodsInfo').append(htmlAttr);
+			
+			t2.resize();
+        }
+    }
+	
+	var isInWeb = webMutual.getQueryString('inWeb');
+	if (isInWeb == 'true') {
+		// 需要自己请求数据
+		var bodyData = {};
+		bodyData.id = webMutual.getQueryString('goodsId');
+		callServerFunction('get_goods_detail_byid', bodyData, function (result, message) {
+			webMutual.platformCall("GoodsInfoGot", result);
+		}, function (message) {
+		})
+		
+	}
+	
+//	webMutual.platformExecute({"method":"GoodsInfoGot","data":{"id":8,"extension":{"id":"8","color":"酒红色","brand":"惠人 (HUROM)","category":"原汁机","material":"TritanTM","capacity":"1.001L(含)-1.5L(含)","model":"HU-780WN","power":"150W","content":"<p>\r\n\t<img src=\"http:\/\/www.weetmall.com\/uploadfile\/goods\/2014\/05\/28\/5385aaef5c6d4.jpg\" \/><img src=\"http:\/\/www.weetmall.com\/uploadfile\/goods\/2014\/05\/28\/5385ab1e3f47e.jpg\" \/><br \/>\r\n\t<br \/>\r\n\t<img src=\"http:\/\/www.weetmall.com\/uploadfile\/goods\/2014\/05\/28\/5385ab7d76f9e.jpg\" \/><img src=\"http:\/\/www.weetmall.com\/uploadfile\/goods\/2014\/05\/28\/5385ab989f1ba.jpg\" \/><\/p>","voltage":"220V\/50HZ","speed":"70RPM"},"limit_num":1,"adddate":"1401267558","rebate":10,"point":"50","keywords":"惠人 (HUROM) HU-780WN原汁机","description":"","picurls":[{"url":"http:\/\/www.weetmall.com\/uploadfile\/goods\/2014\/05\/28\/5385a6f4ecc6f.jpg","alt":"DSC_0563"},{"url":"http:\/\/www.weetmall.com\/uploadfile\/goods\/2014\/05\/28\/5385a88d4d644.jpg","alt":"DSC_0550"},{"url":"http:\/\/www.weetmall.com\/uploadfile\/goods\/2014\/05\/28\/5385a97688b34.jpg","alt":"DSC_0567"}],"shipping_fee":0,"price":4500,"display":1,"modelid":1,"thumb":"http:\/\/www.weetmall.com\/uploadfile\/goods\/2014\/05\/28\/5385a78dabc4c.jpg","stock":97,"name":"惠人 (HUROM) HU-780WN原汁机","mall_price":"3580.00","listorder":"0"}});
+
+</script>
+</body>
+</html>

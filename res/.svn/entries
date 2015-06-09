@@ -1,0 +1,61 @@
+10
+
+dir
+24
+http://www.svnchina.com/svn/ilunch/ilunch/res
+http://www.svnchina.com/svn/ilunch
+
+
+
+2015-05-22T10:11:47.659265Z
+19
+ash87
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+1b5cfd43-3b6d-4ff9-a96d-45e1abb7f340
+
+anim
+dir
+
+drawable
+dir
+
+drawable-hdpi
+dir
+
+drawable-ldpi
+dir
+
+drawable-mdpi
+dir
+
+drawable-xhdpi
+dir
+
+drawable-xxhdpi
+dir
+
+layout
+dir
+
+menu
+dir
+
+raw
+dir
+
+values
+dir
+

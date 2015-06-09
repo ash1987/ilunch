@@ -1,0 +1,44 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{ margin:0px; padding:0px; font-size:12px;font-family: "Microsoft YaHei" ! important; }
+*,html,div,input,img,span,h1,h2,h3,h4,h5,h6,p,dl,dt,dd,ul,li,a,form,textarea{ margin:0px; padding:0px; font-weight:normal;}
+a,a img{ border:none;}
+a,a:Hover,a:visited{text-decoration:none;}
+ul,li{ list-style:none;}
+.red{ color:#f60;}
+.grey{ color:#999;}
+*{
+    -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
+    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+}
+
+
+
+/* Disabling the default iOS bevaviour of copy-paste on long tap */
+
+*:not(input):not(textarea) {
+    
+	-webkit-user-select: none; /* disable selection/Copy of UIWebView */
+	-webkit-touch-callout: none; /* disable the IOS popup when long-press on a link */
+}
+
+/* banner */
+.adsbox,.big_img {width:100%;height:auto; overflow: hidden;padding:0px;margin:0 auto;}
+.swipe {width: 100%;height:auto;overflow: hidden;position: relative;}
+#slider {-webkit-transition: left 800ms ease-in 0;-moz-transition: left 800ms ease-in 0;-o-transition: left 800ms ease-in 0;-ms-transitiodecorationn: left 800ms ease-in 0;transition: left 800ms ease-in 0; display:table;}
+#slider .sliderItem {border-radius:8px; display:table-cell; vertical-align:middle;} 
+#slider .sliderItem p{ display:block; position:absolute; left:0px; bottom:3px; height:auto; line-height:20px;background:url(../images/banner_alpha_bg.png) repeat;color:#fff; font-size:14px; width:100%; text-align:left; padding-bottom:15px;}
+#slider .sliderItem p span{ padding:10px; display:block;}
+#slider .sliderItem a{ display:block; height:auto; width:auto; padding:1em 2em 0.5em; position:relative;}
+#pagenavi {left:0px;bottom: 5px;text-align: center;width: 100%; z-index:10; }
+#pagenavi a {width: 9px;height:9px;line-height: 99em;border-radius: 50%;margin: 0px 3px; padding:0px;overflow: hidden;cursor: pointer;display: inline-block;*display:inline; background:#fff; background-size:9px 9px;*zoom:1;opacity:0.6;}
+.big_img .swipe #pagenavi a {width: 12px;height:12px;line-height: 99em;border-radius: 50%;margin: 0px 3px; padding:0px;overflow: hidden;cursor: pointer;display: inline-block;*display:inline; background:#fff; background-size:9px 9px;*zoom:1;opacity:0.6;}
+#pagenavi a.active {background:#DC5151;opacity:0.8;}
+
+
+.sectionHeader {padding-left:0.56em; line-height:2em;}
+#goodsInfo { padding: 0.5em 0 4em;}
+#goodsInfo li { padding:0 0.83em; width:auto; line-height: 1.58em;}
+#goodsInfo li p { max-width: 100%;}
+#goodsInfo li p img { max-width: 100%;}

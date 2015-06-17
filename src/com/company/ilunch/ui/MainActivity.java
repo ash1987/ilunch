@@ -15,12 +15,15 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
+
 import com.company.ilunch.IlunchApplication;
 import com.company.ilunch.R;
 import com.company.ilunch.base.BaseFragmentActivity;
 import com.company.ilunch.fragment.FindingFragment;
 import com.company.ilunch.fragment.HomePageFragment;
+import com.company.ilunch.fragment.MyLocationDsFragment;
 import com.company.ilunch.fragment.UserFragment;
+import com.company.ilunch.preferences.IlunchPreference;
 import com.company.ilunch.utils.AndroidUtils;
 import com.company.ilunch.widget.CustomToast;
 
@@ -42,6 +45,8 @@ public class MainActivity extends BaseFragmentActivity {
 	private RadioButton homeRadioButton;
 	private RadioButton settingRadioButton;
 	private RadioButton myAccountRadioButton;
+	
+	private IlunchPreference ilunchPerference;
 
 	private final static String INTO_CART_FRAGMENT = "INTO_CART_FRAGMENT";
 	private MyBroadCastReceiver receiver;
@@ -77,7 +82,17 @@ public class MainActivity extends BaseFragmentActivity {
 				currentFragmentTag = saveFlag;
 			}
 		}
-
+		
+		/************************************************test start********************************/
+		ilunchPerference = new IlunchPreference(this);
+		ilunchPerference.setMyLocationCity(this, "深圳");
+		ilunchPerference.setMyLocationCityID(this, "4");
+		ilunchPerference.setMyLocationQy(this, "南山区");
+		ilunchPerference.setMyLocationQyID(this, "22");
+		ilunchPerference.setMyLocationDs(this, "腾讯大厦");
+		ilunchPerference.setMyLocationDsID(this, "227");
+		/************************************************test end********************************/
+		
 		initView();
 		setAttribute();
 	}

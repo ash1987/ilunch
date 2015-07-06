@@ -234,7 +234,6 @@
     <string name="take_photo">拍&#160;&#160;&#160;&#160;&#160;&#160;&#160;照</string>
     <string name="photo_cancel">取&#160;&#160;&#160;&#160;&#160;&#160;&#160;消</string>
     <string name="update_info_finish">完成</string>
-    <string name="content_null">请完整的填写用户信息</string>
     <string name="submiting">提交中...</string>
     <string name="pic_updating">上传中...</string>
     <string name="update_useravatar_success">上传成功</string>

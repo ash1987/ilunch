@@ -466,7 +466,10 @@ OnClickListener {
 										.getPrice());
 						totalNum += Integer.parseInt(gclBean.getBody().get(i)
 								.getNum());
-						nameBuilder.append(gclBean.getBody().get(i).getName()).append("/");
+						nameBuilder.append(gclBean.getBody().get(i).getName());
+						if(i != gclBean.getBody().size() - 1) {
+							nameBuilder.append("/");
+						}
 					}
 
 					numTv.setText("" + totalNum);
@@ -682,7 +685,7 @@ OnClickListener {
 
 		// 网址需要做URL编码
 		sb.append(URLEncoder
-				.encode("http://www.weetmall.com/alipay/notify_url_mobile.php"));
+				.encode("http://121.199.15.192/awc/success.aspx"));
 		sb.append("\"&service=\"mobile.securitypay.pay");
 		sb.append("\"&_input_charset=\"utf-8");
 		sb.append("\"&return_url=\"");

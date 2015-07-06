@@ -21,6 +21,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -66,7 +67,7 @@ OnClickListener {
 	private static final int RQF_PAY = 0x08;
 
 	private ImageView backIv;// 返回
-	private UpRefreshListView goodsListView;
+	private ListView goodsListView;
 	private EnSureOrderFoodListAdapter esoflAdapter;
 	private ArrayList<GetCartListBean.Body> cartListData;
 	private IlunchPreference ilunchPerference;
@@ -127,7 +128,7 @@ OnClickListener {
 
 		titleTv = (TextView) findViewById(R.id.titleTv);
 		backIv = (ImageView) findViewById(R.id.backIv);
-		goodsListView = (UpRefreshListView) findViewById(R.id.goodsListView);
+		goodsListView = (ListView) findViewById(R.id.goodsListView);
 		numTv = (TextView) findViewById(R.id.numTv);
 		totalPriceTv = (TextView) findViewById(R.id.totalPriceTv);
 		my_address_tv = (TextView) findViewById(R.id.my_address_tv);

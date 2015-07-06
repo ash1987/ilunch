@@ -54,8 +54,8 @@ public class AndroidUtils {
 		dm = cx.getApplicationContext().getResources().getDisplayMetrics();
 		return dm.heightPixels;
 	}
-	
-	
+
+
 
 	// 判断网络是否可用
 	public static boolean isNetworkAvailable(Context mContext) {
@@ -148,8 +148,12 @@ public class AndroidUtils {
 		int totalHeight = 0;
 		for (int i = 0, len = listAdapter.getCount(); i < len; i++) { // listAdapter.getCount()返回数据项的数目
 			View listItem = listAdapter.getView(i, null, listView);
-			listItem.measure(0, 0); // 计算子项View 的宽高
-			totalHeight += listItem.getMeasuredHeight(); // 统计所有子项的总高度
+			try{
+				listItem.measure(0, 0); // 计算子项View 的宽高
+				totalHeight += listItem.getMeasuredHeight(); // 统计所有子项的总高度
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		ViewGroup.LayoutParams params = listView.getLayoutParams();
@@ -252,25 +256,25 @@ public class AndroidUtils {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
+
 		return date.getTime();
 	}
-	
+
 	/**
 	 * 
 	 * 将时间戳转换为字符串
 	 */
 	public static String getDateToString(String time, String format) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		
+
 		if (time == null) {
 			return null;
 		}
-		
+
 		long mTime = Long.valueOf(time);
 		return sdf.format(new Date(mTime));
 	}
-	
+
 	/**
 	 * 时间戳转日期时间
 	 * 
@@ -285,7 +289,7 @@ public class AndroidUtils {
 		re_StrTime = sdf.format(new Date(lcc_time));
 		return re_StrTime;
 	}
-	
+
 	/**
 	 * 
 	 * 将Drawable转换为Bitmap
@@ -303,7 +307,7 @@ public class AndroidUtils {
 		drawable.draw(canvas);
 		return bitmap;
 	}
-	
+
 	/*
 	 * 获取服务器图片绝对地址
 	 */
@@ -311,7 +315,7 @@ public class AndroidUtils {
 		if(TextUtils.isEmpty(srcUrl)) {
 			return null;
 		}
-		
+
 		return HttpUrlManager.ROOT_HTTP_URL + srcUrl.substring(1);
 	}
 }

@@ -56,7 +56,8 @@ public class HttpUrlManager {
 	public final static String GET_COMMENT_STRING = "GetComment";
 	//删除购物车
 	public final static String DEL_CART_STRING = "DelCart";
-	
+	//更新订单状态
+	public final static String UPDATE_ORDER_STRING = "UpdateOrder";
 	
 	
 	private final static int URL_FLAG = 0;// 0为正式地址，1为测试地址
@@ -429,5 +430,9 @@ public class HttpUrlManager {
 
 	public final static String getQuickOrderSearchUrl() {
 		return HTTP_ROOT[URL_FLAG] + PATH_STRING[URL_FLAG] + QUICK_ORDER_SEARCH;
+	}
+	
+	public final static String getUpdateOrderStatusUrl() {
+		return HTTP_ROOT[URL_FLAG] + PATH_STRING[URL_FLAG] + UPDATE_ORDER_STRING;
 	}
 }

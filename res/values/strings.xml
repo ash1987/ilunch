@@ -533,6 +533,7 @@
     <string name="get_stemplate_list_fail">获取备注失败</string>
     <string name="get_cart_failed_string">获取菜品分类失败</string>
     <string name="get_order_list_failed_string">获取订单列表失败</string>
+    <string name="update_order_failed_string">更新订单状态失败</string>
     <string name="submit_order_failed_string">提交订单失败</string>
     <string name="please_set_address">请设置收货地址！</string>
     <string name="please_set_alert_time">请设置用餐时间！</string>

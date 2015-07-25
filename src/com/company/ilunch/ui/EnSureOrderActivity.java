@@ -2,10 +2,8 @@ package com.company.ilunch.ui;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
@@ -27,7 +25,6 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.alipay.android.app.sdk.AliPay;
 import com.company.ilunch.IlunchApplication;
 import com.company.ilunch.R;
@@ -39,6 +36,7 @@ import com.company.ilunch.base.BaseActivity;
 import com.company.ilunch.bean.GetCartListBean;
 import com.company.ilunch.bean.GetSTemplateListBean;
 import com.company.ilunch.bean.SubmitMyOrderBean;
+import com.company.ilunch.bean.UpdateOrderStatusBean;
 import com.company.ilunch.net.HttpUrlManager;
 import com.company.ilunch.net.RequestListener;
 import com.company.ilunch.preferences.IlunchPreference;
@@ -46,9 +44,9 @@ import com.company.ilunch.preferences.LoginPreference;
 import com.company.ilunch.task.GetCartListTask;
 import com.company.ilunch.task.GetSTemplateListTask;
 import com.company.ilunch.task.SubmitMyOrderTask;
+import com.company.ilunch.task.UpdateOrderStatusTask;
 import com.company.ilunch.utils.AndroidUtils;
 import com.company.ilunch.utils.LogUtil;
-import com.company.ilunch.widget.UpRefreshListView;
 
 /*
  * 确认支付
@@ -65,6 +63,8 @@ OnClickListener {
 	private final static int MSG_SUBMIT_ORDER_SUCCESS = 0x06;// 　提交订单成功
 	private final static int MSG_SUBMIT_ORDER_FAIL = 0x07;// 提交订单失敗
 	private static final int RQF_PAY = 0x08;
+	private final static int MSG_UPDATE_ORDER_STATUS_SUCCESS = 0x09;// 　更新订单状态成功
+	private final static int MSG_UPDATE_ORDER_STATUS_FAIL = 0x0a;// 更新订单状态失敗
 
 	private ImageView backIv;// 返回
 	private ListView goodsListView;
@@ -254,8 +254,61 @@ OnClickListener {
 						MyLocationActivity.class));
 			}
 		}
-
 	}
+	
+	/**
+	 * 向服务器请求更新订单状态 <br/>
+	 * 
+	 */
+	private void doUpdateOrderStatus(int payState) {
+		UpdateOrderStatusTask task = new UpdateOrderStatusTask();
+
+		JSONObject requestParams = new JSONObject();
+		try {
+			requestParams.put("OrderId", currentId);
+			requestParams.put("PayMode", zfbRb.isChecked()?1:2);
+			requestParams.put("PayState", payState);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		task.request(this, HttpUrlManager.getUpdateOrderStatusUrl(), requestParams,
+				updateOrderStatusListener);
+	}
+
+	/**
+	 * 更新订单状态 接口监听类
+	 */
+	private RequestListener<UpdateOrderStatusBean> updateOrderStatusListener = new RequestListener<UpdateOrderStatusBean>() {
+
+		@Override
+		public void OnStart() {
+			LogUtil.d(TAG, "开始请求OnStart-----------");
+		}
+
+		@Override
+		public void onError(Exception e) {
+			LogUtil.d(TAG, "onError-----------" + e.getMessage());
+		}
+
+		@Override
+		public void OnPaserComplete(UpdateOrderStatusBean bean) {
+			if (bean != null) {
+				LogUtil.d(TAG, "OnPaserComplete:" + bean.getHead());
+				if ("00".equals(bean.getHead().getResultCode())) {
+					mHandler.obtainMessage(MSG_UPDATE_ORDER_STATUS_SUCCESS, bean)
+					.sendToTarget();
+				} else {
+					mHandler.obtainMessage(MSG_UPDATE_ORDER_STATUS_FAIL,
+							bean.getHead().getResultInfo()).sendToTarget();
+				}
+			} else {
+				mHandler.obtainMessage(MSG_UPDATE_ORDER_STATUS_FAIL,
+						getString(R.string.update_order_failed_string))
+						.sendToTarget();
+			}
+		}
+	};
 
 	/**
 	 * 向服务器请求获取备注 <br/>
@@ -556,16 +609,25 @@ OnClickListener {
 				Result result = new Result((String) msg.obj);
 				Toast.makeText(EnSureOrderActivity.this, result.showResult(),
 						Toast.LENGTH_SHORT).show();
+				
+				int payResult = 0;
+				
 				if("操作成功".equals(result.showResult())) {
-					Intent moiIntent = new Intent(EnSureOrderActivity.this, MyOrderInfoActivity.class);
-					moiIntent.putExtra("SalesMethod", SalesMethod);
-					moiIntent.putExtra("OrderId", currentId);
-					moiIntent.putExtra("alertTime", ilunchPerference.getLunchTimeAlert());
-					
-					startActivity(moiIntent);
-					
-					EnSureOrderActivity.this.finish();
+					payResult = 1;
 				}
+				
+				doUpdateOrderStatus(payResult);
+				break;
+			case MSG_UPDATE_ORDER_STATUS_SUCCESS:
+			case MSG_UPDATE_ORDER_STATUS_FAIL:
+				Intent moiIntent = new Intent(EnSureOrderActivity.this, MyOrderInfoActivity.class);
+				moiIntent.putExtra("SalesMethod", SalesMethod);
+				moiIntent.putExtra("OrderId", currentId);
+				moiIntent.putExtra("alertTime", ilunchPerference.getLunchTimeAlert());
+				
+				startActivity(moiIntent);
+				
+				EnSureOrderActivity.this.finish();
 				break;
 			default:
 				break;
@@ -729,7 +791,11 @@ OnClickListener {
 			if(getString(R.string.submit_order_string).equals(btn_sure.getText().toString().trim())) {
 				doSubmitOrder();
 			} else if(getString(R.string.ensure_pay_string).equals(btn_sure.getText().toString().trim())) {
-				zfbPay(currentId);
+				if(zfbRb.isChecked()) {
+					zfbPay(currentId);
+				} else {
+					
+				}
 			}
 			break;
 		default:

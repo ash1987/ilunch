@@ -622,6 +622,7 @@ public class BookingFragment extends BaseFragment {
 			String action = intent.getAction();
 			if (action.equals(UPDATE_LIST_ACTION_NAME)) {
 				doGetCartList();
+				doGetFoodList();
 			}
 		}
 	};
@@ -633,5 +634,14 @@ public class BookingFragment extends BaseFragment {
 		
 		doGetCartList();
 		doGetFoodList();
+	}
+
+	@Override
+	protected void onInvisible() {
+		super.onInvisible();
+		
+		if(foodList != null) {
+			foodList.clear();
+		}
 	}
 }

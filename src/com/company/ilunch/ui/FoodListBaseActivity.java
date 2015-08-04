@@ -235,6 +235,11 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 			locationTv.setText(ilunchPerference.getMyLocationCity()
 					+ ilunchPerference.getMyLocationQy()
 					+ ilunchPerference.getMyLocationDs());
+			
+			Intent intent1 = new Intent(BookingFragment.UPDATE_LIST_ACTION_NAME);
+			
+			// 发送广播
+			sendBroadcast(intent1);
 		}
 	}
 

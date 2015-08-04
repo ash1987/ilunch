@@ -1,11 +1,17 @@
 package com.company.ilunch.ui;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -13,30 +19,38 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import com.company.ilunch.R;
 import com.company.ilunch.base.BaseActivity;
 import com.company.ilunch.bean.LoginBean;
-import com.company.ilunch.net.HttpManager;
 import com.company.ilunch.net.HttpUrlManager;
 import com.company.ilunch.net.RequestListener;
 import com.company.ilunch.net.RequestParams;
 import com.company.ilunch.preferences.LoginPreference;
 import com.company.ilunch.task.LoginTask;
-import com.company.ilunch.task.ThirdLoginBindTask;
 import com.company.ilunch.utils.AndroidUtils;
 import com.company.ilunch.utils.LogUtil;
-import com.company.ilunch.utils.QQLoginUtil;
-import com.company.ilunch.utils.WechatLoginUtil;
-import com.company.ilunch.utils.WeiBoLoginUtil;
 import com.company.ilunch.widget.CustomToast;
-import com.tencent.tauth.IUiListener;
-import com.tencent.tauth.UiError;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.controller.UMServiceFactory;
+import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.socialize.controller.listener.SocializeListeners.UMAuthListener;
+import com.umeng.socialize.controller.listener.SocializeListeners.UMDataListener;
+import com.umeng.socialize.exception.SocializeException;
+import com.umeng.socialize.sso.SinaSsoHandler;
+import com.umeng.socialize.sso.UMQQSsoHandler;
+import com.umeng.socialize.weixin.controller.UMWXHandler;
 
 /**
  * 登录界面
  */
 public class LoginActivity extends BaseActivity implements OnClickListener {
 	public final static String TAG = "com.company.ilunch";
+	
+	// 整个平台的Controller, 负责管理整个SDK的配置、操作等处理
+	private UMSocialService mController = UMServiceFactory
+			.getUMSocialService("com.umeng.login");
+	
 	public final static int COMPLETEINFO_REQUESTCODE = 1;// 完善资料
 	public final static int LOGIN_SUCESS = 0x01;// 登录成功
 	public final static int LOGIN_FAILED = 0x02;// 登录失败
@@ -57,20 +71,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private String openid = "";// 第三方登录返回的openid
 	private int authid = 0;
 
-	// QQ登录
-	private QQLoginUtil qqLoginUtil;
-	// 微信登录
-	private WechatLoginUtil wechatLoginUtil;
-	// 新浪微博登录
-	private WeiBoLoginUtil weiBoLoginUtil;
-
 	@Override
 	protected void initData() {
-		qqLoginUtil = new QQLoginUtil(LoginActivity.this);
-		wechatLoginUtil = new WechatLoginUtil(this);
-		weiBoLoginUtil = new WeiBoLoginUtil(LoginActivity.this, callback);
 		requestParams = new RequestParams();
 		loginPreference = new LoginPreference(this);
+		configPlatforms();
 	}
 
 	@Override
@@ -99,6 +104,22 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		}
 	}
 
+	private void configPlatforms() {
+		String appId = "1104679322";
+		String appKey = "zcasi5Oo05lI5q8r";
+		// 添加QQ支持
+		UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(LoginActivity.this,
+				appId, appKey);
+		qqSsoHandler.addToSocialSDK();
+
+		//设置新浪SSO handler
+		mController.getConfig().setSsoHandler(new SinaSsoHandler());
+		
+		// 添加微信平台
+		UMWXHandler wxHandler = new UMWXHandler(this, "wx4df89a42df2b8455", "e563e3c171e9c647159fea554973b0f2");
+		wxHandler.addToSocialSDK();
+	}
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -109,88 +130,142 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			loginInfoComplete();
 			break;
 		case R.id.qqIv:// QQ登录
-			qqLoginUtil.login(new BaseUiListener());
+			login(SHARE_MEDIA.QQ);
 			break;
-			// case R.id.weiboLoginBtn:// 微博登录
-			// weiBoLoginUtil.login();
-			// break;
 		case R.id.wechatIv://微信登录
-			wechatLoginUtil.login();
+			login(SHARE_MEDIA.WEIXIN);
 			break;
 		default:
 			break;
 		}
 	}
+	
+	/**
+	 * 授权。如果授权成功，则获取用户信息</br>
+	 */
+	private void login(final SHARE_MEDIA platform) {
+		mController.doOauthVerify(LoginActivity.this, platform, new UMAuthListener() {
+
+			@Override
+			public void onStart(SHARE_MEDIA platform) {
+				Toast.makeText(LoginActivity.this, "start", 0).show();
+			}
+
+			@Override
+			public void onError(SocializeException e, SHARE_MEDIA platform) {
+			}
+
+			@Override
+			public void onComplete(Bundle value, SHARE_MEDIA platform) {
+				Toast.makeText(LoginActivity.this, "onComplete", 0).show();
+				String uid = value.getString("uid");
+				if (!TextUtils.isEmpty(uid)) {
+					getUserInfo(platform);
+				} else {
+					Toast.makeText(LoginActivity.this, "授权失败...", Toast.LENGTH_SHORT).show();
+				}
+			}
+
+			@Override
+			public void onCancel(SHARE_MEDIA platform) {
+			}
+		});
+	}
+
+	/**
+	 * 获取授权平台的用户信息</br>
+	 */
+	private void getUserInfo(SHARE_MEDIA platform) {
+		mController.getPlatformInfo(LoginActivity.this, SHARE_MEDIA.SINA, new UMDataListener() {
+			@Override
+			public void onStart() {
+				Toast.makeText(LoginActivity.this, "获取平台数据开始...", Toast.LENGTH_SHORT).show();
+			}                                              
+			@Override
+			public void onComplete(int status, Map<String, Object> info) {
+				if(status == 200 && info != null){
+					StringBuilder sb = new StringBuilder();
+					Set<String> keys = info.keySet();
+					for(String key : keys){
+						sb.append(key+"="+info.get(key).toString()+"\r\n");
+					}
+					Log.d("TestData",sb.toString());
+				}else{
+					Log.d("TestData","发生错误："+status);
+				}
+			}
+		});
+	}
 
 	/**
 	 * QQ登录监听类
 	 */
-	public class BaseUiListener implements IUiListener {
-
-		@Override
-		public void onComplete(Object response) {
-			CustomToast
-			.getToast(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT)
-			.show();
-			doComplete((JSONObject) response);
-		}
-
-		protected void doComplete(JSONObject values) {
-			// 保存登录成功返回的信息
-			LogUtil.d(TAG, "QQ登录返回：" + values.toString());
-			if (values.has("openid")) {
-				try {
-					authid = QQ_LOGIN_BIND;
-					openid = values.getString("openid");
-					isBind(authid, openid);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-		@Override
-		public void onError(UiError e) {
-			CustomToast
-			.getToast(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT)
-			.show();
-		}
-
-		@Override
-		public void onCancel() {
-			CustomToast.getToast(LoginActivity.this, "已取消登录",
-					Toast.LENGTH_SHORT).show();
-		}
-	}
+//	public class BaseUiListener implements IUiListener {
+//
+//		@Override
+//		public void onComplete(Object response) {
+//			CustomToast
+//			.getToast(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT)
+//			.show();
+//			doComplete((JSONObject) response);
+//		}
+//
+//		protected void doComplete(JSONObject values) {
+//			// 保存登录成功返回的信息
+//			LogUtil.d(TAG, "QQ登录返回：" + values.toString());
+//			if (values.has("openid")) {
+//				try {
+//					authid = QQ_LOGIN_BIND;
+//					openid = values.getString("openid");
+//					isBind(authid, openid);
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//
+//		@Override
+//		public void onError(UiError e) {
+//			CustomToast
+//			.getToast(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT)
+//			.show();
+//		}
+//
+//		@Override
+//		public void onCancel() {
+//			CustomToast.getToast(LoginActivity.this, "已取消登录",
+//					Toast.LENGTH_SHORT).show();
+//		}
+//	}
 
 	/**
 	 * 判断QQ账号或新浪微博账号是否已经绑定 <br/>
 	 * 
 	 * @param [authid]-[3-新浪；4-QQ] <br/>
 	 */
-	private void isBind(int authid, String openId) {
-		showProgress(null, null);
-		ThirdLoginBindTask task = new ThirdLoginBindTask();
-		requestParams.clear();
-		requestParams.add("authid", authid + "");
-		requestParams.add("connectid", openId);
-		task.request(LoginActivity.this, HttpUrlManager.getBindLoginUrl(),
-				HttpManager.HTTPMETHOD_JSON, requestParams, bindListener);
-	}
+//	private void isBind(int authid, String openId) {
+//		showProgress(null, null);
+//		ThirdLoginBindTask task = new ThirdLoginBindTask();
+//		requestParams.clear();
+//		requestParams.add("authid", authid + "");
+//		requestParams.add("connectid", openId);
+//		task.request(LoginActivity.this, HttpUrlManager.getBindLoginUrl(),
+//				HttpManager.HTTPMETHOD_JSON, requestParams, bindListener);
+//	}
 
 	// 微博授权成功回调
-	private Handler.Callback callback = new Handler.Callback() {
-
-		@Override
-		public boolean handleMessage(Message msg) {
-			String token = (String) msg.obj;
-			if (!TextUtils.isEmpty(token)) {
-				authid = SINA_LOGIN_BIND;
-				isBind(authid, token);
-			}
-			return false;
-		}
-	};
+//	private Handler.Callback callback = new Handler.Callback() {
+//
+//		@Override
+//		public boolean handleMessage(Message msg) {
+//			String token = (String) msg.obj;
+//			if (!TextUtils.isEmpty(token)) {
+//				authid = SINA_LOGIN_BIND;
+//				isBind(authid, token);
+//			}
+//			return false;
+//		}
+//	};
 
 	// 判断账户密码填写的完整性
 	private void loginInfoComplete() {
@@ -314,42 +389,42 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	/**
 	 * 登录接口监听类
 	 */
-	private RequestListener<LoginBean> bindListener = new RequestListener<LoginBean>() {
-
-		@Override
-		public void OnStart() {
-			LogUtil.d(TAG, "开始请求OnStart-----------");
-		}
-
-		@Override
-		public void onError(Exception e) {
-			dismissProgress();
-			LogUtil.d(TAG, "onError-----------" + e.getMessage());
-			mHandler.obtainMessage(LOGIN_FAILED, e.getMessage()).sendToTarget();
-		}
-
-		@Override
-		public void OnPaserComplete(LoginBean bean) {
-			dismissProgress();
-			if (bean != null) {
-				// LogUtil.d(TAG, "OnPaserComplete:" + bean.getMsg());
-				// if ("1".equals(bean.getStatus())) {// 已绑定
-				// mHandler.obtainMessage(BIND_LOGIN_SUCESS, bean)
-				// .sendToTarget();
-				// } else if ("0".equals(bean.getStatus())) {// 未绑定
-				// mHandler.obtainMessage(NOT_BIND_LOGIN, bean.getMsg())
-				// .sendToTarget();
-				// } else {
-				// mHandler.obtainMessage(LOGIN_FAILED, bean.getMsg())
-				// .sendToTarget();
-				// }
-			} else {
-				mHandler.obtainMessage(LOGIN_FAILED,
-						getString(R.string.request_failed_string))
-						.sendToTarget();
-			}
-		}
-	};
+//	private RequestListener<LoginBean> bindListener = new RequestListener<LoginBean>() {
+//
+//		@Override
+//		public void OnStart() {
+//			LogUtil.d(TAG, "开始请求OnStart-----------");
+//		}
+//
+//		@Override
+//		public void onError(Exception e) {
+//			dismissProgress();
+//			LogUtil.d(TAG, "onError-----------" + e.getMessage());
+//			mHandler.obtainMessage(LOGIN_FAILED, e.getMessage()).sendToTarget();
+//		}
+//
+//		@Override
+//		public void OnPaserComplete(LoginBean bean) {
+//			dismissProgress();
+//			if (bean != null) {
+//				// LogUtil.d(TAG, "OnPaserComplete:" + bean.getMsg());
+//				// if ("1".equals(bean.getStatus())) {// 已绑定
+//				// mHandler.obtainMessage(BIND_LOGIN_SUCESS, bean)
+//				// .sendToTarget();
+//				// } else if ("0".equals(bean.getStatus())) {// 未绑定
+//				// mHandler.obtainMessage(NOT_BIND_LOGIN, bean.getMsg())
+//				// .sendToTarget();
+//				// } else {
+//				// mHandler.obtainMessage(LOGIN_FAILED, bean.getMsg())
+//				// .sendToTarget();
+//				// }
+//			} else {
+//				mHandler.obtainMessage(LOGIN_FAILED,
+//						getString(R.string.request_failed_string))
+//						.sendToTarget();
+//			}
+//		}
+//	};
 
 	/**
 	 * handler用于处理网络请求的返回数据
@@ -431,20 +506,20 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		weiBoLoginUtil.setOnActivityResult(requestCode, resultCode, data);
-		if (resultCode == RESULT_OK) {
-			switch (requestCode) {
-			case COMPLETEINFO_REQUESTCODE:// 完善资料
-				CustomToast.getToast(LoginActivity.this,
-						getString(R.string.login_success_string),
-						Toast.LENGTH_SHORT).show();
-				Intent intent = new Intent();
-				setResult(RESULT_OK, intent);
-				LoginActivity.this.finish();
-				break;
-			default:
-				break;
-			}
-		}
+//		weiBoLoginUtil.setOnActivityResult(requestCode, resultCode, data);
+//		if (resultCode == RESULT_OK) {
+//			switch (requestCode) {
+//			case COMPLETEINFO_REQUESTCODE:// 完善资料
+//				CustomToast.getToast(LoginActivity.this,
+//						getString(R.string.login_success_string),
+//						Toast.LENGTH_SHORT).show();
+//				Intent intent = new Intent();
+//				setResult(RESULT_OK, intent);
+//				LoginActivity.this.finish();
+//				break;
+//			default:
+//				break;
+//			}
+//		}
 	}
 }

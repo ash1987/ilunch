@@ -1,8 +1,7 @@
 package com.company.ilunch.wxapi;
 
-import com.company.ilunch.utils.WechatLoginUtil;
-import com.tencent.mm.sdk.openapi.BaseReq;
-import com.tencent.mm.sdk.openapi.BaseResp;
+import com.tencent.mm.sdk.modelbase.BaseReq;
+import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -18,7 +17,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		api = WXAPIFactory.createWXAPI(this, WechatLoginUtil.APP_ID, false);
+		api = WXAPIFactory.createWXAPI(this, "wx4df89a42df2b8455", false);
 		api.handleIntent(getIntent(), this);
 	}
 

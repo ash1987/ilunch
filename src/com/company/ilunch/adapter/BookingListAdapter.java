@@ -52,8 +52,10 @@ public class BookingListAdapter extends BaseAdapter {
 	public interface Callback {
 		public void addToCart(Body body);
 		public void updateCart(Body body, int num);
+		public void addComment(Body body);
 		public void addFav(Body body);
 		public void deleCart(Body body);
+		public void ShowFoodList(Body body);
 	}
 
 	@Override
@@ -111,7 +113,9 @@ public class BookingListAdapter extends BaseAdapter {
 			holder.favIv.setImageResource(R.drawable.icon_heart01_s);
 		}
 		
+		holder.commentIv.setOnClickListener(new AddComment(data.get(position), callback));
 		holder.favIv.setOnClickListener(new AddFav(data.get(position), callback));
+		holder.good_mall_price_tv.setOnClickListener(new ShowMerchantFoodList(data.get(position), callback));
 		
 		if(!TextUtils.isEmpty(data.get(position).getCommentNum())) {
 			holder.commentTv.setText(data.get(position).getCommentNum());
@@ -153,6 +157,36 @@ public class BookingListAdapter extends BaseAdapter {
 		holder.down_num_ib.setOnClickListener(new DownNumOnclick(holder, data.get(position), callback));
 		
 		return converView;
+	}
+	
+	public class ShowMerchantFoodList implements OnClickListener {
+		private Body body;
+		private Callback callback;
+		
+		ShowMerchantFoodList(Body body, Callback callback) {
+			this.body = body;
+			this.callback = callback;
+		}
+		
+		@Override
+		public void onClick(View v) {
+			callback.ShowFoodList(body);
+		}
+	}
+	
+	public class AddComment implements OnClickListener {
+		private Body body;
+		private Callback callback;
+		
+		AddComment(Body body, Callback callback) {
+			this.body = body;
+			this.callback = callback;
+		}
+		
+		@Override
+		public void onClick(View v) {
+			callback.addComment(body);
+		}
 	}
 	
 	public class AddFav implements OnClickListener {

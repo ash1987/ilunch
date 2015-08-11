@@ -58,6 +58,8 @@ public class HttpUrlManager {
 	public final static String DEL_CART_STRING = "DelCart";
 	//更新订单状态
 	public final static String UPDATE_ORDER_STRING = "UpdateOrder";
+	//获取商家菜品列表
+	public final static String GET_FOODLIST_BY_TOGO_STRING = "GetFoodListByTogo";
 	
 	
 	private final static int URL_FLAG = 0;// 0为正式地址，1为测试地址
@@ -434,5 +436,9 @@ public class HttpUrlManager {
 	
 	public final static String getUpdateOrderStatusUrl() {
 		return HTTP_ROOT[URL_FLAG] + PATH_STRING[URL_FLAG] + UPDATE_ORDER_STRING;
+	}
+	
+	public final static String getFoodListByTogoUrl() {
+		return HTTP_ROOT[URL_FLAG] + PATH_STRING[URL_FLAG] + GET_FOODLIST_BY_TOGO_STRING;
 	}
 }

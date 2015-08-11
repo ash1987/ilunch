@@ -260,13 +260,13 @@ OnClickListener {
 	 * 向服务器请求更新订单状态 <br/>
 	 * 
 	 */
-	private void doUpdateOrderStatus(int payState) {
+	private void doUpdateOrderStatus(String payState) {
 		UpdateOrderStatusTask task = new UpdateOrderStatusTask();
 
 		JSONObject requestParams = new JSONObject();
 		try {
 			requestParams.put("OrderId", currentId);
-			requestParams.put("PayMode", zfbRb.isChecked()?1:2);
+			requestParams.put("PayMode", zfbRb.isChecked()?"1":"2");
 			requestParams.put("PayState", payState);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -610,10 +610,10 @@ OnClickListener {
 				Toast.makeText(EnSureOrderActivity.this, result.showResult(),
 						Toast.LENGTH_SHORT).show();
 				
-				int payResult = 0;
+				String payResult = "0";
 				
 				if("操作成功".equals(result.showResult())) {
-					payResult = 1;
+					payResult = "1";
 				}
 				
 				doUpdateOrderStatus(payResult);

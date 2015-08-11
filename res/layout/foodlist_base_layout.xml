@@ -71,6 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:background="@color/white"
             android:padding="5dp" >
 
             <ImageView
@@ -205,6 +206,15 @@
             android:scrollbars="none"
             android:visibility="gone" >
         </com.company.ilunch.widget.SlideListView>
+        
+        <View 
+            android:id="@+id/tempView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/shopCartListView"
+            android:visibility="gone"
+            android:background="#a0000000"
+            android:layout_alignParentTop="true"/>
     </RelativeLayout>
 
 </LinearLayout>

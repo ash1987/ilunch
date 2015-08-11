@@ -114,6 +114,7 @@
         android:layout_marginLeft="10dp"
         android:layout_toLeftOf="@id/ContainerRl"
         android:layout_toRightOf="@id/good_iv"
+        android:clickable="true"
         android:singleLine="true"
         android:text="星州大椰(喜盈店)出品"
         android:textColor="#888888"

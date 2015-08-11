@@ -483,6 +483,7 @@
     <string name="get_foodlist_failed_string">菜品获取失败</string>
     <string name="add_cart_failed_string">加入购物车失败</string>
     <string name="update_cart_failed_string">更新购物车失败</string>
+    <string name="get_foodlist_by_togo_failed_string">获取菜品失败</string>
     
     <string name="getcity_success">获取城市列表成功</string>
     <string name="getcity_fail">获取城市列表失败</string>

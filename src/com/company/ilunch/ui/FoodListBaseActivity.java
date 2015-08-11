@@ -23,9 +23,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -103,6 +106,8 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 	private TextView numTv;
 	private TextView totalNumTv;
 	private TextView totalPriceTv;
+	
+	private View tempView;
 
 	private ArrayList<Body> bodyList;// 菜品列表
 	private int bottomLine;// 菜品列表下划线距离
@@ -144,6 +149,7 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 		enSureBt = (Button) findViewById(R.id.enSureBt);
 		locationRl = (RelativeLayout) findViewById(R.id.locationRl);
 		locationTv = (TextView) findViewById(R.id.locationTv);
+		tempView = findViewById(R.id.tempView);
 
 		numTv = (TextView) findViewById(R.id.numTv);
 		totalNumTv = (TextView) findViewById(R.id.totalNumTv);
@@ -158,7 +164,18 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 		mViewPager.setOnPageChangeListener(new MyPagerOnPageChangeListener());
 		locationRl.setOnClickListener(this);
 		backIv.setOnClickListener(this);
-
+		
+		tempView.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				shopCartListView.setVisibility(View.GONE);
+				tempView.setVisibility(View.GONE);
+				
+				return false;
+			}
+		});
+		
 		scAdapter = new ShopCartListAdapter(this, cartListData,
 				new ShopCartListAdapter.Callback() {
 					@Override
@@ -166,9 +183,10 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 							com.company.ilunch.bean.GetCartListBean.Body body,
 							int num) {
 						doUpdateCart(body, num);
-						
-						Intent intent1 = new Intent(BookingFragment.UPDATE_LIST_ACTION_NAME);
-						
+
+						Intent intent1 = new Intent(
+								BookingFragment.UPDATE_LIST_ACTION_NAME);
+
 						// 发送广播
 						sendBroadcast(intent1);
 					}
@@ -177,9 +195,10 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 					public void deleItem(
 							com.company.ilunch.bean.GetCartListBean.Body body) {
 						doDelCart(body);
-						
-						Intent intent1 = new Intent(BookingFragment.UPDATE_LIST_ACTION_NAME);
-						
+
+						Intent intent1 = new Intent(
+								BookingFragment.UPDATE_LIST_ACTION_NAME);
+
 						// 发送广播
 						sendBroadcast(intent1);
 
@@ -235,9 +254,9 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 			locationTv.setText(ilunchPerference.getMyLocationCity()
 					+ ilunchPerference.getMyLocationQy()
 					+ ilunchPerference.getMyLocationDs());
-			
+
 			Intent intent1 = new Intent(BookingFragment.UPDATE_LIST_ACTION_NAME);
-			
+
 			// 发送广播
 			sendBroadcast(intent1);
 		}
@@ -716,7 +735,7 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 				GetCartListBean gclBean = (GetCartListBean) msg.obj;
 				if (gclBean != null && gclBean.getBody() != null
 						&& gclBean.getBody().size() != 0) {
-//					shopCartIv.setVisibility(View.VISIBLE);
+					// shopCartIv.setVisibility(View.VISIBLE);
 					numTv.setVisibility(View.VISIBLE);
 					totalNumTv.setVisibility(View.VISIBLE);
 					totalPriceTv.setVisibility(View.VISIBLE);
@@ -747,10 +766,11 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 				scAdapter.notifyDataSetChanged();
 				break;
 			case MSG_GET_CART_LIST_FAIL:
-//				shopCartIv.setVisibility(View.GONE);
+				// shopCartIv.setVisibility(View.GONE);
 				numTv.setVisibility(View.GONE);
 				totalNumTv.setVisibility(View.GONE);
 				totalPriceTv.setVisibility(View.GONE);
+				tempView.setVisibility(View.GONE);
 
 				cartListData.clear();
 
@@ -796,26 +816,31 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 			String action = intent.getAction();
 			if (action.equals(UPDATE_CART_ACTION_NAME)) {
 				doGetCartList();
-			} else if(action.equals(DEL_CART_ACTION_NAME)) {
-				if(intent.getExtras() == null || !intent.getExtras().containsKey("pid")) {
+			} else if (action.equals(DEL_CART_ACTION_NAME)) {
+				if (intent.getExtras() == null
+						|| !intent.getExtras().containsKey("pid")) {
 					return;
 				}
-				
-				if(cartListData != null && cartListData.size() > 0 ) {
-					for(int i=0;i<cartListData.size();i++) {
-						if(intent.getExtras().getString("pid").equals(cartListData.get(i).getId())) {
+
+				if (cartListData != null && cartListData.size() > 0) {
+					for (int i = 0; i < cartListData.size(); i++) {
+						if (intent.getExtras().getString("pid")
+								.equals(cartListData.get(i).getId())) {
 							DelCartTask task = new DelCartTask();
 
 							JSONObject requestParams = new JSONObject();
 							try {
-								requestParams.put("UCode", cartListData.get(i).getTempcode());
-								requestParams.put("DataID", cartListData.get(i).getDataId());
+								requestParams.put("UCode", cartListData.get(i)
+										.getTempcode());
+								requestParams.put("DataID", cartListData.get(i)
+										.getDataId());
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
 
-							task.request(FoodListBaseActivity.this, HttpUrlManager.DEL_CART_STRING, requestParams,
-									delCartListener);
+							task.request(FoodListBaseActivity.this,
+									HttpUrlManager.DEL_CART_STRING,
+									requestParams, delCartListener);
 						}
 					}
 				}
@@ -823,6 +848,7 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 		}
 	};
 
+	@SuppressLint("NewApi")
 	@Override
 	public void onClick(View v) {
 		if (v == null) {
@@ -841,10 +867,16 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 					});
 			mpw.showAsDropDown(menuIv);
 		} else if (v.getId() == R.id.shopCartIv) {
+			if(shopCartListView.getAdapter().getCount() == 0) {
+				return;
+			}
+			
 			if (shopCartListView.isShown()) {
 				shopCartListView.setVisibility(View.GONE);
+				tempView.setVisibility(View.GONE);
 			} else {
 				shopCartListView.setVisibility(View.VISIBLE);
+				tempView.setVisibility(View.VISIBLE);
 			}
 		} else if (v.getId() == R.id.enSureBt) {
 			if (cartListData == null || cartListData.size() == 0) {

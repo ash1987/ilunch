@@ -53,7 +53,7 @@ public class BookingFragment extends BaseFragment {
 	public static final String FRAGMENT_TAG = BookingFragment.class
 			.getSimpleName();
 	public final static String UPDATE_LIST_ACTION_NAME = "UPDATE_LIST_ACTION_NAME";
-	
+
 	private final static int MSG_GET_FOOD_SUCCESS = 0x01;// 獲取菜品列表成功
 	private final static int MSG_GET_FOOD_FAIL = 0x02;// 獲取菜品列表失敗
 	private final static int MSG_ADD_TO_CART_SUCCESS = 0x03;// 　加入购物车成功
@@ -105,7 +105,7 @@ public class BookingFragment extends BaseFragment {
 	// 初始化控件
 	private void initView(View view) {
 		cartListData = new ArrayList<GetCartListBean.Body>();
-		
+
 		foodList = new ArrayList<GetFoodListBean.Body>();
 		goodsLv = (UpRefreshListView) view.findViewById(R.id.goodsListView);
 	}
@@ -133,11 +133,13 @@ public class BookingFragment extends BaseFragment {
 					@Override
 					public void addFav(
 							com.company.ilunch.bean.GetFoodListBean.Body body) {
-						if(!loginPreference.getLoginState()) {
-							Toast.makeText(BookingFragment.this.getActivity(), R.string.please_login, Toast.LENGTH_SHORT).show();
+						if (!loginPreference.getLoginState()) {
+							Toast.makeText(BookingFragment.this.getActivity(),
+									R.string.please_login, Toast.LENGTH_SHORT)
+									.show();
 							return;
 						}
-						
+
 						doAddMyCollect(body);
 					}
 
@@ -147,20 +149,24 @@ public class BookingFragment extends BaseFragment {
 						Intent intent3 = new Intent(
 								FoodListBaseActivity.DEL_CART_ACTION_NAME);
 						intent3.putExtra("pid", body.getUnid());
-						
+
 						// 发送广播
-						BookingFragment.this.getActivity().sendBroadcast(intent3);
+						BookingFragment.this.getActivity().sendBroadcast(
+								intent3);
 					}
 
 					@Override
 					public void addComment(
 							com.company.ilunch.bean.GetFoodListBean.Body body) {
-						if(!loginPreference.getLoginState()) {
-							Toast.makeText(BookingFragment.this.getActivity(), R.string.please_login, Toast.LENGTH_SHORT).show();
+						if (!loginPreference.getLoginState()) {
+							Toast.makeText(BookingFragment.this.getActivity(),
+									R.string.please_login, Toast.LENGTH_SHORT)
+									.show();
 							return;
 						}
-						
-						Intent cfIntent = new Intent(BookingFragment.this.getActivity(),
+
+						Intent cfIntent = new Intent(
+								BookingFragment.this.getActivity(),
 								CommentFoodActivity.class);
 						cfIntent.putExtra("TogoId", body.getMaster());
 						cfIntent.putExtra("foodName", body.getFoodName());
@@ -191,7 +197,7 @@ public class BookingFragment extends BaseFragment {
 			public void onRefresh() {
 				isRefreshing = true;
 				pageNo = 1;
-				
+
 				doGetCartList();
 				doGetFoodList();
 			}
@@ -200,34 +206,35 @@ public class BookingFragment extends BaseFragment {
 
 			@Override
 			public void onMore() {
-//				if (total > foodList.size()) {
-					pageNo++;
-					goodsLv.addAutoLoadFooterView(BookingFragment.this
-							.getActivity());
-					
-					doGetCartList();
-					doGetFoodList();
-//				}
+				// if (total > foodList.size()) {
+				pageNo++;
+				goodsLv.addAutoLoadFooterView(BookingFragment.this
+						.getActivity());
+
+				doGetCartList();
+				doGetFoodList();
+				// }
 			}
 		});
-		
+
 		registerBoradcastReceiver();
 	}
-	
+
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		
+
 		unRegisterBoradcastReceiver();
 	}
-	
+
 	/**
 	 * 向服务器请求获取商家菜品列表 <br/>
 	 * 
 	 */
-	private void doGetFoodListByTogo(com.company.ilunch.bean.GetFoodListBean.Body body) {
+	private void doGetFoodListByTogo(
+			com.company.ilunch.bean.GetFoodListBean.Body body) {
 		showProgress("", "获取商家菜品中...");
-		
+
 		GetFoodListByTogoTask task = new GetFoodListByTogoTask();
 
 		JSONObject requestParams = new JSONObject();
@@ -269,24 +276,27 @@ public class BookingFragment extends BaseFragment {
 		@Override
 		public void OnPaserComplete(GetFoodListByTogoBean bean) {
 			dismissProgress();
-			
+
 			if (bean != null) {
 				LogUtil.d(FRAGMENT_TAG, "OnPaserComplete:" + bean.getHead());
 				if ("00".equals(bean.getHead().getResultCode())) {
-					mHandler.obtainMessage(MSG_GET_FOODLIST_BY_TOGO_SUCCESS, bean)
-							.sendToTarget();
+					mHandler.obtainMessage(MSG_GET_FOODLIST_BY_TOGO_SUCCESS,
+							bean).sendToTarget();
 				} else {
 					mHandler.obtainMessage(MSG_GET_FOODLIST_BY_TOGO_FAIL,
 							bean.getHead().getResultInfo()).sendToTarget();
 				}
 			} else {
-				mHandler.obtainMessage(MSG_GET_FOODLIST_BY_TOGO_FAIL,
-						getString(R.string.get_foodlist_by_togo_failed_string))
-						.sendToTarget();
+				if (isAdded()) {
+					mHandler.obtainMessage(
+							MSG_GET_FOODLIST_BY_TOGO_FAIL,
+							getString(R.string.get_foodlist_by_togo_failed_string))
+							.sendToTarget();
+				}
 			}
 		}
 	};
-	
+
 	/**
 	 * 向服务器请求获取购物车 <br/>
 	 * 
@@ -301,8 +311,8 @@ public class BookingFragment extends BaseFragment {
 			e.printStackTrace();
 		}
 
-		task.request(this.getActivity(), HttpUrlManager.GET_CART_LIST_STRING, requestParams,
-				getCartListListener);
+		task.request(this.getActivity(), HttpUrlManager.GET_CART_LIST_STRING,
+				requestParams, getCartListListener);
 	}
 
 	/**
@@ -332,7 +342,7 @@ public class BookingFragment extends BaseFragment {
 							bean.getHead().getResultInfo()).sendToTarget();
 				}
 			} else {
-				if(isAdded()) {
+				if (isAdded()) {
 					mHandler.obtainMessage(MSG_GET_CART_LIST_FAIL,
 							getString(R.string.get_cart_failed_string))
 							.sendToTarget();
@@ -340,7 +350,7 @@ public class BookingFragment extends BaseFragment {
 			}
 		}
 	};
-	
+
 	/**
 	 * 向服务器请求添加收藏 <br/>
 	 * 
@@ -394,9 +404,11 @@ public class BookingFragment extends BaseFragment {
 							bean.getHead().getResultInfo()).sendToTarget();
 				}
 			} else {
-				mHandler.obtainMessage(MSG_ADD_COLLECT_FAIL,
-						getString(R.string.add_collect_failed_string))
-						.sendToTarget();
+				if (isAdded()) {
+					mHandler.obtainMessage(MSG_ADD_COLLECT_FAIL,
+							getString(R.string.add_collect_failed_string))
+							.sendToTarget();
+				}
 			}
 		}
 	};
@@ -451,9 +463,11 @@ public class BookingFragment extends BaseFragment {
 							bean.getHead().getResultInfo()).sendToTarget();
 				}
 			} else {
-				mHandler.obtainMessage(MSG_UPDATE_CART_FAIL,
-						getString(R.string.update_cart_failed_string))
-						.sendToTarget();
+				if (isAdded()) {
+					mHandler.obtainMessage(MSG_UPDATE_CART_FAIL,
+							getString(R.string.update_cart_failed_string))
+							.sendToTarget();
+				}
 			}
 		}
 	};
@@ -521,9 +535,11 @@ public class BookingFragment extends BaseFragment {
 							bean.getHead().getResultInfo()).sendToTarget();
 				}
 			} else {
-				mHandler.obtainMessage(MSG_ADD_TO_CART_FAIL,
-						getString(R.string.add_cart_failed_string))
-						.sendToTarget();
+				if (isAdded()) {
+					mHandler.obtainMessage(MSG_ADD_TO_CART_FAIL,
+							getString(R.string.add_cart_failed_string))
+							.sendToTarget();
+				}
 			}
 		}
 	};
@@ -599,9 +615,11 @@ public class BookingFragment extends BaseFragment {
 							bean.getHead().getResultInfo()).sendToTarget();
 				}
 			} else {
-				mHandler.obtainMessage(MSG_GET_FOOD_FAIL,
-						getString(R.string.get_foodlist_failed_string))
-						.sendToTarget();
+				if (isAdded()) {
+					mHandler.obtainMessage(MSG_GET_FOOD_FAIL,
+							getString(R.string.get_foodlist_failed_string))
+							.sendToTarget();
+				}
 			}
 		}
 	};
@@ -669,11 +687,12 @@ public class BookingFragment extends BaseFragment {
 				break;
 			case MSG_ADD_COLLECT_SUCCESS:
 				Toast.makeText(BookingFragment.this.getActivity(),
-						R.string.add_collect_success_string, Toast.LENGTH_SHORT).show();
-				
+						R.string.add_collect_success_string, Toast.LENGTH_SHORT)
+						.show();
+
 				isRefreshing = true;
 				pageNo = 1;
-				
+
 				doGetCartList();
 				doGetFoodList();
 				break;
@@ -688,26 +707,26 @@ public class BookingFragment extends BaseFragment {
 					cartListData.clear();
 					cartListData.addAll(gclBean.getBody());
 				}
-				
+
 				bookingListAdapter.notifyDataSetChanged();
 				break;
 			case MSG_GET_CART_LIST_FAIL:
 				cartListData.clear();
-				
+
 				bookingListAdapter.notifyDataSetChanged();
 				break;
 			case MSG_GET_FOODLIST_BY_TOGO_SUCCESS:
-				
+
 				break;
 			case MSG_GET_FOODLIST_BY_TOGO_FAIL:
-				
+
 				break;
 			default:
 				break;
 			}
 		}
 	};
-	
+
 	public void registerBoradcastReceiver() {
 		IntentFilter myIntentFilter = new IntentFilter();
 		myIntentFilter.addAction(UPDATE_LIST_ACTION_NAME);
@@ -724,6 +743,15 @@ public class BookingFragment extends BaseFragment {
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
 			if (action.equals(UPDATE_LIST_ACTION_NAME)) {
+				isRefreshing = true;
+				pageNo = 1;
+				if (foodList != null) {
+					foodList.clear();
+				}
+				if (cartListData != null) {
+					cartListData.clear();
+				}
+
 				doGetCartList();
 				doGetFoodList();
 			}
@@ -734,7 +762,13 @@ public class BookingFragment extends BaseFragment {
 	protected void lazyLoad() {
 		isRefreshing = true;
 		pageNo = 1;
-		
+		if (foodList != null) {
+			foodList.clear();
+		}
+		if (cartListData != null) {
+			cartListData.clear();
+		}
+
 		doGetCartList();
 		doGetFoodList();
 	}
@@ -742,8 +776,8 @@ public class BookingFragment extends BaseFragment {
 	@Override
 	protected void onInvisible() {
 		super.onInvisible();
-		
-		if(foodList != null) {
+
+		if (foodList != null) {
 			foodList.clear();
 		}
 	}

@@ -1,10 +1,8 @@
 package com.company.ilunch.ui;
 
 import java.util.ArrayList;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -28,7 +26,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
-import android.view.WindowManager;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -40,7 +37,6 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.alibaba.fastjson.JSON;
 import com.company.ilunch.IlunchApplication;
 import com.company.ilunch.R;
@@ -89,6 +85,7 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 	private ViewPager mViewPager;
 	private ImageView backIv;// 返回
 
+	private RelativeLayout shopCartRl;
 	private ImageView shopCartIv;// 购物车按钮
 	private SlideListView shopCartListView;// 购物车列表
 	private ShopCartListAdapter scAdapter;
@@ -144,6 +141,7 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mHorizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontalScrollView);
 		shopCartIv = (ImageView) findViewById(R.id.shopCartIv);
+		shopCartRl = (RelativeLayout) findViewById(R.id.shopCartRl);
 		shopCartListView = (SlideListView) findViewById(R.id.shopCartListView);
 		titleTv = (TextView) findViewById(R.id.titleTv);
 		enSureBt = (Button) findViewById(R.id.enSureBt);
@@ -159,6 +157,7 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 	private void setAttribute() {
 		menuIv.setOnClickListener(this);
 		shopCartIv.setOnClickListener(this);
+		shopCartRl.setOnClickListener(this);
 		enSureBt.setOnClickListener(this);
 		mRadioGroup.setOnCheckedChangeListener(this);
 		mViewPager.setOnPageChangeListener(new MyPagerOnPageChangeListener());
@@ -866,7 +865,7 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 						}
 					});
 			mpw.showAsDropDown(menuIv);
-		} else if (v.getId() == R.id.shopCartIv) {
+		} else if (v.getId() == R.id.shopCartRl) {
 			if(shopCartListView.getAdapter().getCount() == 0) {
 				return;
 			}

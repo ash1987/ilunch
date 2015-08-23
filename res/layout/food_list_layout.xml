@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:background="@color/white"
         android:cacheColorHint="@color/transparent"
-        android:divider="#c1c1c1"
+        android:divider="@drawable/xian_heng"
         android:dividerHeight="1px"
         android:fadingEdge="none"
         android:listSelector="#00000000"

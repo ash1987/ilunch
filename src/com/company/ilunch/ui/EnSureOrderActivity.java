@@ -52,7 +52,7 @@ import com.company.ilunch.utils.LogUtil;
  * 确认支付
  */
 public class EnSureOrderActivity extends BaseActivity implements
-OnClickListener {
+		OnClickListener {
 	public final static String TAG = "com.company.ilunch";
 
 	private final static int MSG_GET_CART_LIST_SUCCESS = 0x01;// 　获取购物车成功
@@ -107,9 +107,11 @@ OnClickListener {
 	private String subject;
 	private String body;
 	private String total_fee;
+	private int addressResId;
 
 	@Override
 	protected void initData() {
+		addressResId = R.string.default_address_desc;
 		cartListData = new ArrayList<GetCartListBean.Body>();
 		stllDataList = new ArrayList<GetSTemplateListBean.Body>();
 		ilunchPerference = new IlunchPreference(this);
@@ -210,20 +212,14 @@ OnClickListener {
 			my_address_tv.setText(R.string.add_addres_desc);
 			msztRl.setOnClickListener(new AddressOnclick(1));
 		} else {
-			int addressResId = R.string.default_address_desc;
-			if(SalesMethod == 0) {
+			if (SalesMethod == 0) {
 				addressResId = R.string.yc_address_string;
-			} else if(SalesMethod == 1) {
+			} else if (SalesMethod == 1) {
 				addressResId = R.string.qc_address_string;
-			} else if(SalesMethod == 2) {
+			} else if (SalesMethod == 2) {
 				addressResId = R.string.sc_address_string;
 			}
 
-			my_address_tv.setText(String.format(
-					getString(addressResId),
-					ilunchPerference.getMyLocationCity()
-					+ ilunchPerference.getMyLocationQy()
-					+ ilunchPerference.getMyLocationDs()));
 			sendAddress = ilunchPerference.getMyLocationCity()
 					+ ilunchPerference.getMyLocationQy()
 					+ ilunchPerference.getMyLocationDs();
@@ -255,7 +251,7 @@ OnClickListener {
 			}
 		}
 	}
-	
+
 	/**
 	 * 向服务器请求更新订单状态 <br/>
 	 * 
@@ -266,14 +262,14 @@ OnClickListener {
 		JSONObject requestParams = new JSONObject();
 		try {
 			requestParams.put("OrderId", currentId);
-			requestParams.put("PayMode", zfbRb.isChecked()?"1":"2");
+			requestParams.put("PayMode", zfbRb.isChecked() ? "1" : "2");
 			requestParams.put("PayState", payState);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 
-		task.request(this, HttpUrlManager.getUpdateOrderStatusUrl(), requestParams,
-				updateOrderStatusListener);
+		task.request(this, HttpUrlManager.getUpdateOrderStatusUrl(),
+				requestParams, updateOrderStatusListener);
 	}
 
 	/**
@@ -296,8 +292,8 @@ OnClickListener {
 			if (bean != null) {
 				LogUtil.d(TAG, "OnPaserComplete:" + bean.getHead());
 				if ("00".equals(bean.getHead().getResultCode())) {
-					mHandler.obtainMessage(MSG_UPDATE_ORDER_STATUS_SUCCESS, bean)
-					.sendToTarget();
+					mHandler.obtainMessage(MSG_UPDATE_ORDER_STATUS_SUCCESS,
+							bean).sendToTarget();
 				} else {
 					mHandler.obtainMessage(MSG_UPDATE_ORDER_STATUS_FAIL,
 							bean.getHead().getResultInfo()).sendToTarget();
@@ -344,7 +340,7 @@ OnClickListener {
 				LogUtil.d(TAG, "OnPaserComplete:" + bean.getHead());
 				if ("00".equals(bean.getHead().getResultCode())) {
 					mHandler.obtainMessage(MSG_GET_STEMPLATE_LIST_SUCCESS, bean)
-					.sendToTarget();
+							.sendToTarget();
 				} else {
 					mHandler.obtainMessage(MSG_GET_STEMPLATE_LIST_FAIL,
 							bean.getHead().getResultInfo()).sendToTarget();
@@ -368,18 +364,21 @@ OnClickListener {
 			return;
 		}
 
-		if(TextUtils.isEmpty(sendAddress)) {
-			Toast.makeText(this, R.string.please_set_address, Toast.LENGTH_SHORT).show();
+		if (TextUtils.isEmpty(sendAddress)) {
+			Toast.makeText(this, R.string.please_set_address,
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
 
-		if(TextUtils.isEmpty(ilunchPerference.getLunchTimeAlert())) {
-			Toast.makeText(this, R.string.please_set_alert_time, Toast.LENGTH_SHORT).show();
+		if (TextUtils.isEmpty(ilunchPerference.getLunchTimeAlert())) {
+			Toast.makeText(this, R.string.please_set_alert_time,
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
 
-		if(TextUtils.isEmpty(Remark)) {
-			Toast.makeText(this, R.string.please_set_remind, Toast.LENGTH_SHORT).show();
+		if (TextUtils.isEmpty(Remark)) {
+			Toast.makeText(this, R.string.please_set_remind, Toast.LENGTH_SHORT)
+					.show();
 			return;
 		}
 
@@ -393,7 +392,8 @@ OnClickListener {
 			requestParams.put("UserId",
 					Integer.parseInt(loginPreference.getDataID()));
 			requestParams.put("Address", sendAddress);
-			requestParams.put("AddressID", Integer.parseInt(ilunchPerference.getMyLocationDsid()));
+			requestParams.put("AddressID",
+					Integer.parseInt(ilunchPerference.getMyLocationDsid()));
 			requestParams.put("Remark", Remark);
 			requestParams.put("SendTime", ilunchPerference.getLunchTimeAlert());
 			requestParams.put("OrderType", SalesMethod);
@@ -401,8 +401,8 @@ OnClickListener {
 			e.printStackTrace();
 		}
 
-		task.request(this, HttpUrlManager.SUBMIT_MY_ORDER_STRING, requestParams,
-				submitMyOrderListener);
+		task.request(this, HttpUrlManager.SUBMIT_MY_ORDER_STRING,
+				requestParams, submitMyOrderListener);
 	}
 
 	/**
@@ -430,7 +430,7 @@ OnClickListener {
 				LogUtil.d(TAG, "OnPaserComplete:" + bean.getHead());
 				if ("00".equals(bean.getHead().getResultCode())) {
 					mHandler.obtainMessage(MSG_SUBMIT_ORDER_SUCCESS, bean)
-					.sendToTarget();
+							.sendToTarget();
 				} else {
 					mHandler.obtainMessage(MSG_SUBMIT_ORDER_FAIL,
 							bean.getHead().getResultInfo()).sendToTarget();
@@ -482,7 +482,7 @@ OnClickListener {
 				LogUtil.d(TAG, "OnPaserComplete:" + bean.getHead());
 				if ("00".equals(bean.getHead().getResultCode())) {
 					mHandler.obtainMessage(MSG_GET_CART_LIST_SUCCESS, bean)
-					.sendToTarget();
+							.sendToTarget();
 				} else {
 					mHandler.obtainMessage(MSG_GET_CART_LIST_FAIL,
 							bean.getHead().getResultInfo()).sendToTarget();
@@ -520,7 +520,7 @@ OnClickListener {
 						totalNum += Integer.parseInt(gclBean.getBody().get(i)
 								.getNum());
 						nameBuilder.append(gclBean.getBody().get(i).getName());
-						if(i != gclBean.getBody().size() - 1) {
+						if (i != gclBean.getBody().size() - 1) {
 							nameBuilder.append("/");
 						}
 					}
@@ -539,6 +539,17 @@ OnClickListener {
 
 				esoflAdapter.notifyDataSetChanged();
 				AndroidUtils.setListViewHeightBasedOnChildren(goodsListView);
+
+				if (SalesMethod == 0 || SalesMethod == 1) {
+					my_address_tv.setText(String.format(
+							getString(addressResId), gclBean.getBody().get(0).getTogoName()));
+				} else if (SalesMethod == 2) {
+					my_address_tv.setText(String.format(
+							getString(addressResId),
+							ilunchPerference.getMyLocationCity()
+									+ ilunchPerference.getMyLocationQy()
+									+ ilunchPerference.getMyLocationDs()));
+				}
 				break;
 			case MSG_GET_CART_LIST_FAIL:
 				Toast.makeText(EnSureOrderActivity.this, (String) msg.obj,
@@ -571,9 +582,9 @@ OnClickListener {
 			case MSG_SUBMIT_ORDER_SUCCESS:
 				SubmitMyOrderBean smoBean = (SubmitMyOrderBean) msg.obj;
 
-				try{
+				try {
 					currentId = smoBean.getBody().get(0).getOrderId();
-				}catch(Exception e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
@@ -592,9 +603,10 @@ OnClickListener {
 				orderInfoAddressTv.setText(String.format(
 						getString(R.string.default_address_desc),
 						ilunchPerference.getMyLocationCity()
-						+ ilunchPerference.getMyLocationQy()
-						+ ilunchPerference.getMyLocationDs()));
-				orderInfoTimeTv.setText(String.format(getString(R.string.eat_time_desc),
+								+ ilunchPerference.getMyLocationQy()
+								+ ilunchPerference.getMyLocationDs()));
+				orderInfoTimeTv.setText(String.format(
+						getString(R.string.eat_time_desc),
 						ilunchPerference.getLunchTimeAlert()));
 				orderBzTv.setText(String.format(getString(R.string.cpbe_desc),
 						Remark));
@@ -609,24 +621,26 @@ OnClickListener {
 				Result result = new Result((String) msg.obj);
 				Toast.makeText(EnSureOrderActivity.this, result.showResult(),
 						Toast.LENGTH_SHORT).show();
-				
+
 				String payResult = "0";
-				
-				if("操作成功".equals(result.showResult())) {
+
+				if ("操作成功".equals(result.showResult())) {
 					payResult = "1";
 				}
-				
+
 				doUpdateOrderStatus(payResult);
 				break;
 			case MSG_UPDATE_ORDER_STATUS_SUCCESS:
 			case MSG_UPDATE_ORDER_STATUS_FAIL:
-				Intent moiIntent = new Intent(EnSureOrderActivity.this, MyOrderInfoActivity.class);
+				Intent moiIntent = new Intent(EnSureOrderActivity.this,
+						MyOrderInfoActivity.class);
 				moiIntent.putExtra("SalesMethod", SalesMethod);
 				moiIntent.putExtra("OrderId", currentId);
-				moiIntent.putExtra("alertTime", ilunchPerference.getLunchTimeAlert());
-				
+				moiIntent.putExtra("alertTime",
+						ilunchPerference.getLunchTimeAlert());
+
 				startActivity(moiIntent);
-				
+
 				EnSureOrderActivity.this.finish();
 				break;
 			default:
@@ -675,6 +689,10 @@ OnClickListener {
 			ll.addView(rb);
 
 			rb.setOnCheckedChangeListener(new BzOnCheckedListener(i));
+
+			if (i == 0) {
+				rb.setChecked(true);
+			}
 		}
 	}
 
@@ -710,7 +728,8 @@ OnClickListener {
 			final String orderInfo = info;
 			new Thread() {
 				public void run() {
-					AliPay alipay = new AliPay(EnSureOrderActivity.this, mHandler);
+					AliPay alipay = new AliPay(EnSureOrderActivity.this,
+							mHandler);
 
 					// 设置为沙箱模式，不设置默认为线上环境
 					// alipay.setSandBox(true);
@@ -726,8 +745,8 @@ OnClickListener {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			Toast.makeText(EnSureOrderActivity.this, R.string.remote_call_failed,
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(EnSureOrderActivity.this,
+					R.string.remote_call_failed, Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -746,8 +765,7 @@ OnClickListener {
 		sb.append("\"&notify_url=\"");
 
 		// 网址需要做URL编码
-		sb.append(URLEncoder
-				.encode("http://121.199.15.192/awc/success.aspx"));
+		sb.append(URLEncoder.encode("http://121.199.15.192/awc/success.aspx"));
 		sb.append("\"&service=\"mobile.securitypay.pay");
 		sb.append("\"&_input_charset=\"utf-8");
 		sb.append("\"&return_url=\"");
@@ -788,13 +806,15 @@ OnClickListener {
 					EatTimeActivity.class));
 			break;
 		case R.id.btn_sure:
-			if(getString(R.string.submit_order_string).equals(btn_sure.getText().toString().trim())) {
+			if (getString(R.string.submit_order_string).equals(
+					btn_sure.getText().toString().trim())) {
 				doSubmitOrder();
-			} else if(getString(R.string.ensure_pay_string).equals(btn_sure.getText().toString().trim())) {
-				if(zfbRb.isChecked()) {
+			} else if (getString(R.string.ensure_pay_string).equals(
+					btn_sure.getText().toString().trim())) {
+				if (zfbRb.isChecked()) {
 					zfbPay(currentId);
 				} else {
-					
+
 				}
 			}
 			break;

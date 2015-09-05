@@ -523,7 +523,7 @@
     <string name="no_data">无数据!</string>
     <string name="edit_address">编辑地址</string>
     
-    <string name="ramain_num">/份    已售:%1$s份</string>
+    <string name="ramain_num">已售:%1$s份</string>
     <string name="num_fen">%1$s份     合计  </string>
     <string name="shopcart_null">购物车为空!</string>
     <string name="shopcart_total_price">共    ￥%1$s</string>
@@ -556,8 +556,8 @@
     <string name="del_cart_success_string">删除成功</string>
     <string name="del_cart_fail_string">删除失败</string>
     <string name="cpbe_desc">餐品备注：%1$s</string>
-    <string name="merchant_publish_string">%1$s 出品</string>
     <string name="yc_address_string">用餐地址：%1$s</string>
     <string name="qc_address_string">取餐地址：%1$s</string>
     <string name="sc_address_string">送餐地址：%1$s</string>
+    <string name="get_foodlist_by_togo_fail">获取列表失败</string>
 </resources>

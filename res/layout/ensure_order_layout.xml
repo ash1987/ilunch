@@ -184,51 +184,39 @@
                     android:layout_width="match_parent"
                     android:layout_height="0.1dp"
                     android:background="@drawable/xian_heng" />
+
+                <RelativeLayout
+                    android:id="@+id/cpbzRl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingTop="15dp" >
+
+                    <TextView
+                        android:id="@+id/cpbzTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="餐品备注："
+                        android:textColor="#666666"
+                        android:textSize="17sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/jt_right_black1" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@drawable/xian_heng" />
             </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/cpbzRl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:clickable="true" >
-
-                <TextView
-                    android:id="@+id/cpbzDescTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="餐品备注"
-                    android:textColor="#666666"
-                    android:textSize="15sp" />
-
-                <ImageView
-                    android:id="@+id/cpbzIv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@id/cpbzDescTv"
-                    android:src="@drawable/icon_down" />
-            </RelativeLayout>
-
-            <RadioGroup
-                android:id="@+id/cpbzRg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical"
-                android:paddingLeft="25dp"
-                android:paddingRight="25dp"
-                android:visibility="gone" >
-            </RadioGroup>
-
-            <View
-                android:id="@+id/payTypeLineView"
-                android:layout_width="match_parent"
-                android:layout_height="0.1dp"
-                android:background="@drawable/xian_heng" />
 
             <LinearLayout
                 android:id="@+id/orderInfoLl"

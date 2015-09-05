@@ -433,12 +433,4 @@ public class HttpUrlManager {
 	public final static String getQuickOrderSearchUrl() {
 		return HTTP_ROOT[URL_FLAG] + PATH_STRING[URL_FLAG] + QUICK_ORDER_SEARCH;
 	}
-	
-	public final static String getUpdateOrderStatusUrl() {
-		return HTTP_ROOT[URL_FLAG] + PATH_STRING[URL_FLAG] + UPDATE_ORDER_STRING;
-	}
-	
-	public final static String getFoodListByTogoUrl() {
-		return HTTP_ROOT[URL_FLAG] + PATH_STRING[URL_FLAG] + GET_FOODLIST_BY_TOGO_STRING;
-	}
 }

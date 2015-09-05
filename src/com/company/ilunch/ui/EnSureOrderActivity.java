@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -57,14 +58,11 @@ public class EnSureOrderActivity extends BaseActivity implements
 
 	private final static int MSG_GET_CART_LIST_SUCCESS = 0x01;// 　获取购物车成功
 	private final static int MSG_GET_CART_LIST_FAIL = 0x02;// 获取购物车失敗
-	private final static int MSG_GET_STEMPLATE_LIST_SUCCESS = 0x03;// 　获取备注成功
-	private final static int MSG_GET_STEMPLATE_LIST_FAIL = 0x04;// 获取备注失敗
-	private final static int MSG_SHOW_BEIZHU_SUCCESS = 0x05;// 显示备注
-	private final static int MSG_SUBMIT_ORDER_SUCCESS = 0x06;// 　提交订单成功
-	private final static int MSG_SUBMIT_ORDER_FAIL = 0x07;// 提交订单失敗
-	private static final int RQF_PAY = 0x08;
-	private final static int MSG_UPDATE_ORDER_STATUS_SUCCESS = 0x09;// 　更新订单状态成功
-	private final static int MSG_UPDATE_ORDER_STATUS_FAIL = 0x0a;// 更新订单状态失敗
+	private final static int MSG_SUBMIT_ORDER_SUCCESS = 0x03;// 　提交订单成功
+	private final static int MSG_SUBMIT_ORDER_FAIL = 0x04;// 提交订单失敗
+	private static final int RQF_PAY = 0x05;
+	private final static int MSG_UPDATE_ORDER_STATUS_SUCCESS = 0x06;// 　更新订单状态成功
+	private final static int MSG_UPDATE_ORDER_STATUS_FAIL = 0x07;// 更新订单状态失敗
 
 	private ImageView backIv;// 返回
 	private ListView goodsListView;
@@ -83,8 +81,6 @@ public class EnSureOrderActivity extends BaseActivity implements
 	private RelativeLayout eatTimeRl;
 	private TextView eatTimeTv;
 	private RelativeLayout cpbzRl;
-	private RadioGroup cpbzRg;
-	private ImageView cpbzIv;
 	private Button btn_sure;
 	private LinearLayout payTypeContainerLl;
 	private LinearLayout containserLl;
@@ -138,14 +134,11 @@ public class EnSureOrderActivity extends BaseActivity implements
 		eatTimeRl = (RelativeLayout) findViewById(R.id.eatTimeRl);
 		eatTimeTv = (TextView) findViewById(R.id.eatTimeTv);
 		cpbzRl = (RelativeLayout) findViewById(R.id.cpbzRl);
-		cpbzRg = (RadioGroup) findViewById(R.id.cpbzRg);
-		cpbzIv = (ImageView) findViewById(R.id.cpbzIv);
 		zfbRb = (RadioButton) findViewById(R.id.zfbRb);
 		wetchatRb = (RadioButton) findViewById(R.id.wetchatRb);
 		btn_sure = (Button) findViewById(R.id.btn_sure);
 		payTypeContainerLl = (LinearLayout) findViewById(R.id.payTypeContainerLl);
 		containserLl = (LinearLayout) findViewById(R.id.containserLl);
-		payTypeLineView = findViewById(R.id.payTypeLineView);
 
 		orderInfoLl = (LinearLayout) findViewById(R.id.orderInfoLl);
 		orderInfoDesc = (TextView) findViewById(R.id.orderInfoDesc);
@@ -164,16 +157,11 @@ public class EnSureOrderActivity extends BaseActivity implements
 		zfbRb.setOnCheckedChangeListener(new zfbOnchecked());
 		wetchatRb.setOnCheckedChangeListener(new wetchatOnchecked());
 
-		cpbzRl.setVisibility(View.GONE);
-		cpbzRg.setVisibility(View.GONE);
-
 		esoflAdapter = new EnSureOrderFoodListAdapter(this, cartListData);
 		goodsListView.setAdapter(esoflAdapter);
 
 		doGetCartList();
 		AndroidUtils.setListViewHeightBasedOnChildren(goodsListView);
-
-		doGetSTemplateList();
 	}
 
 	class zfbOnchecked implements OnCheckedChangeListener {
@@ -268,8 +256,8 @@ public class EnSureOrderActivity extends BaseActivity implements
 			e.printStackTrace();
 		}
 
-		task.request(this, HttpUrlManager.getUpdateOrderStatusUrl(),
-				requestParams, updateOrderStatusListener);
+		task.request(this, HttpUrlManager.UPDATE_ORDER_STRING, requestParams,
+				updateOrderStatusListener);
 	}
 
 	/**
@@ -307,53 +295,6 @@ public class EnSureOrderActivity extends BaseActivity implements
 	};
 
 	/**
-	 * 向服务器请求获取备注 <br/>
-	 * 
-	 */
-	private void doGetSTemplateList() {
-		GetSTemplateListTask task = new GetSTemplateListTask();
-
-		JSONObject requestParams = new JSONObject();
-
-		task.request(this, HttpUrlManager.GET_STEMPLATE_LIST_STRING,
-				requestParams, getSTemplateListBeanListener);
-	}
-
-	/**
-	 * 获取菜品分类接口监听类
-	 */
-	private RequestListener<GetSTemplateListBean> getSTemplateListBeanListener = new RequestListener<GetSTemplateListBean>() {
-
-		@Override
-		public void OnStart() {
-			LogUtil.d(TAG, "开始请求OnStart-----------");
-		}
-
-		@Override
-		public void onError(Exception e) {
-			LogUtil.d(TAG, "onError-----------" + e.getMessage());
-		}
-
-		@Override
-		public void OnPaserComplete(GetSTemplateListBean bean) {
-			if (bean != null) {
-				LogUtil.d(TAG, "OnPaserComplete:" + bean.getHead());
-				if ("00".equals(bean.getHead().getResultCode())) {
-					mHandler.obtainMessage(MSG_GET_STEMPLATE_LIST_SUCCESS, bean)
-							.sendToTarget();
-				} else {
-					mHandler.obtainMessage(MSG_GET_STEMPLATE_LIST_FAIL,
-							bean.getHead().getResultInfo()).sendToTarget();
-				}
-			} else {
-				mHandler.obtainMessage(MSG_GET_STEMPLATE_LIST_FAIL,
-						getString(R.string.get_stemplate_list_fail))
-						.sendToTarget();
-			}
-		}
-	};
-
-	/**
 	 * 向服务器请求提交订单 <br/>
 	 * 
 	 */
@@ -373,12 +314,6 @@ public class EnSureOrderActivity extends BaseActivity implements
 		if (TextUtils.isEmpty(ilunchPerference.getLunchTimeAlert())) {
 			Toast.makeText(this, R.string.please_set_alert_time,
 					Toast.LENGTH_SHORT).show();
-			return;
-		}
-
-		if (TextUtils.isEmpty(Remark)) {
-			Toast.makeText(this, R.string.please_set_remind, Toast.LENGTH_SHORT)
-					.show();
 			return;
 		}
 
@@ -542,7 +477,8 @@ public class EnSureOrderActivity extends BaseActivity implements
 
 				if (SalesMethod == 0 || SalesMethod == 1) {
 					my_address_tv.setText(String.format(
-							getString(addressResId), gclBean.getBody().get(0).getTogoName()));
+							getString(addressResId), gclBean.getBody().get(0)
+									.getTogoName()));
 				} else if (SalesMethod == 2) {
 					my_address_tv.setText(String.format(
 							getString(addressResId),
@@ -554,30 +490,6 @@ public class EnSureOrderActivity extends BaseActivity implements
 			case MSG_GET_CART_LIST_FAIL:
 				Toast.makeText(EnSureOrderActivity.this, (String) msg.obj,
 						Toast.LENGTH_SHORT).show();
-				break;
-			case MSG_GET_STEMPLATE_LIST_SUCCESS:
-				GetSTemplateListBean gstlBean = (GetSTemplateListBean) msg.obj;
-
-				if (gstlBean != null && gstlBean.getBody() != null
-						&& gstlBean.getBody().size() != 0) {
-					stllDataList.clear();
-					stllDataList.addAll(gstlBean.getBody());
-				}
-
-				mHandler.sendEmptyMessage(MSG_SHOW_BEIZHU_SUCCESS);
-				break;
-			case MSG_GET_STEMPLATE_LIST_FAIL:
-				Toast.makeText(EnSureOrderActivity.this, (String) msg.obj,
-						Toast.LENGTH_SHORT).show();
-
-				cpbzRl.setVisibility(View.GONE);
-				cpbzRg.setVisibility(View.GONE);
-				break;
-			case MSG_SHOW_BEIZHU_SUCCESS:
-				addRadioBtns();
-
-				cpbzRl.setVisibility(View.VISIBLE);
-				cpbzRg.setVisibility(View.GONE);
 				break;
 			case MSG_SUBMIT_ORDER_SUCCESS:
 				SubmitMyOrderBean smoBean = (SubmitMyOrderBean) msg.obj;
@@ -597,8 +509,6 @@ public class EnSureOrderActivity extends BaseActivity implements
 
 				containserLl.setVisibility(View.GONE);
 				payTypeLineView.setVisibility(View.GONE);
-				cpbzRl.setVisibility(View.GONE);
-				cpbzRg.setVisibility(View.GONE);
 
 				orderInfoAddressTv.setText(String.format(
 						getString(R.string.default_address_desc),
@@ -648,73 +558,6 @@ public class EnSureOrderActivity extends BaseActivity implements
 			}
 		};
 	};
-
-	@SuppressLint("NewApi")
-	private void addRadioBtns() {
-		if (stllDataList == null || stllDataList.size() == 0) {
-			return;
-		}
-
-		LinearLayout ll = null;
-		for (int i = 0; i < stllDataList.size(); i++) {
-			if (i % 3 == 0) {
-				ll = new LinearLayout(this);
-				RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
-						LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-				ll.setLayoutParams(params);
-				ll.setOrientation(LinearLayout.HORIZONTAL);
-				ll.setWeightSum(3);
-
-				cpbzRg.addView(ll);
-			}
-			RadioButton rb = new RadioButton(this);
-			rb.setId(i);
-			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
-					LayoutParams.WRAP_CONTENT, 1);
-			rb.setLayoutParams(params);
-			rb.setButtonDrawable(R.drawable.goods_cpbz_selector);
-
-			if (stllDataList.get(i).isIscheck()) {
-				rb.setChecked(true);
-				Remark = stllDataList.get(i).getRemark();
-			} else {
-				rb.setChecked(false);
-			}
-
-			rb.setTextColor(Color.parseColor("#666666"));
-			rb.setTextSize(AndroidUtils.sp2px(this, 6));
-			rb.setText(stllDataList.get(i).getRemark());
-			rb.setTag(stllDataList.get(i));
-
-			ll.addView(rb);
-
-			rb.setOnCheckedChangeListener(new BzOnCheckedListener(i));
-
-			if (i == 0) {
-				rb.setChecked(true);
-			}
-		}
-	}
-
-	class BzOnCheckedListener implements OnCheckedChangeListener {
-		private int index;
-
-		public BzOnCheckedListener(int i) {
-			this.index = i;
-		}
-
-		@Override
-		public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
-			cb.setChecked(true);
-			for (int i = 0; i < stllDataList.size(); i++) {
-				stllDataList.get(i).setIscheck(false);
-			}
-			stllDataList.get(index).setIscheck(true);
-
-			cpbzRg.removeAllViews();
-			addRadioBtns();
-		}
-	}
 
 	private void zfbPay(String outTradeNo) {
 		try {
@@ -792,15 +635,6 @@ public class EnSureOrderActivity extends BaseActivity implements
 		case R.id.backIv:
 			this.finish();
 			break;
-		case R.id.cpbzRl:
-			if (cpbzRg.isShown()) {
-				cpbzRg.setVisibility(View.GONE);
-				cpbzIv.setImageResource(R.drawable.icon_down);
-			} else {
-				cpbzRg.setVisibility(View.VISIBLE);
-				cpbzIv.setImageResource(R.drawable.icon_up);
-			}
-			break;
 		case R.id.eatTimeRl:
 			startActivity(new Intent(EnSureOrderActivity.this,
 					EatTimeActivity.class));
@@ -818,8 +652,27 @@ public class EnSureOrderActivity extends BaseActivity implements
 				}
 			}
 			break;
+		case R.id.cpbzRl:
+			startActivityForResult(new Intent(EnSureOrderActivity.this,
+					CpbzActivity.class), 1);
+			break;
 		default:
 			break;
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		switch (requestCode) {
+		case 1:
+			if (data != null) {
+				Bundle bundle = data.getExtras();
+				if (bundle != null && bundle.containsKey("Remark")) {
+					Remark = bundle.getString("Remark");
+				}
+			}
 		}
 	}
 }

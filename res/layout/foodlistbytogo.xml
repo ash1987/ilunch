@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f5f5f5" >
+
+    <RelativeLayout
+        android:id="@+id/titleInclude"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/head_title_height"
+        android:background="@drawable/top_bar_bg" >
+
+        <TextView
+            android:id="@+id/titleTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <com.company.ilunch.widget.UpRefreshListView
+        android:id="@+id/goodsListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:cacheColorHint="@color/transparent"
+        android:divider="@drawable/xian_heng"
+        android:dividerHeight="1px"
+        android:fadingEdge="none"
+        android:listSelector="#00000000"
+        android:scrollbars="none" >
+    </com.company.ilunch.widget.UpRefreshListView>
+
+</LinearLayout>

@@ -25,7 +25,6 @@ import com.company.ilunch.bean.AddMyCollectBean;
 import com.company.ilunch.bean.AddToCartBean;
 import com.company.ilunch.bean.GetCartListBean;
 import com.company.ilunch.bean.GetFoodListBean;
-import com.company.ilunch.bean.GetFoodListByTogoBean;
 import com.company.ilunch.bean.GetShopDataBean.Body;
 import com.company.ilunch.bean.UpdateCartBean;
 import com.company.ilunch.net.HttpUrlManager;
@@ -35,12 +34,11 @@ import com.company.ilunch.preferences.LoginPreference;
 import com.company.ilunch.task.AddMyCollectTask;
 import com.company.ilunch.task.AddToCartTask;
 import com.company.ilunch.task.GetCartListTask;
-import com.company.ilunch.task.GetFoodListByTogoTask;
 import com.company.ilunch.task.GetFoodListTask;
 import com.company.ilunch.task.UpdateCartTask;
 import com.company.ilunch.ui.CommentFoodActivity;
 import com.company.ilunch.ui.FoodListBaseActivity;
-import com.company.ilunch.ui.MyFavActivity;
+import com.company.ilunch.ui.FoodListByTogoActivity;
 import com.company.ilunch.utils.LogUtil;
 import com.company.ilunch.widget.UpRefreshListView;
 import com.company.ilunch.widget.UpRefreshListView.OnRefreshListener;
@@ -64,8 +62,6 @@ public class BookingFragment extends BaseFragment {
 	private final static int MSG_ADD_COLLECT_FAIL = 0x08;// 添加收藏失敗
 	private final static int MSG_GET_CART_LIST_SUCCESS = 0x09;// 　获取购物车成功
 	private final static int MSG_GET_CART_LIST_FAIL = 0x0a;// 获取购物车失敗
-	private final static int MSG_GET_FOODLIST_BY_TOGO_SUCCESS = 0x0b;// 　获取商家菜品列表成功
-	private final static int MSG_GET_FOODLIST_BY_TOGO_FAIL = 0x0c;// 获取商家菜品列表失敗
 
 	private BookingListAdapter bookingListAdapter;
 	private ArrayList<GetFoodListBean.Body> foodList;
@@ -177,7 +173,11 @@ public class BookingFragment extends BaseFragment {
 					@Override
 					public void ShowFoodList(
 							com.company.ilunch.bean.GetFoodListBean.Body body) {
-						doGetFoodListByTogo(body);
+						Intent intent = new Intent();
+						intent.setClass(BookingFragment.this.getActivity(), FoodListByTogoActivity.class);
+						intent.putExtra("master", body.getMaster());
+						intent.putExtra("fpName", body.getName());
+						startActivity(intent);
 					}
 				});
 		goodsLv.setAdapter(bookingListAdapter);
@@ -226,76 +226,6 @@ public class BookingFragment extends BaseFragment {
 
 		unRegisterBoradcastReceiver();
 	}
-
-	/**
-	 * 向服务器请求获取商家菜品列表 <br/>
-	 * 
-	 */
-	private void doGetFoodListByTogo(
-			com.company.ilunch.bean.GetFoodListBean.Body body) {
-		showProgress("", "获取商家菜品中...");
-
-		GetFoodListByTogoTask task = new GetFoodListByTogoTask();
-
-		JSONObject requestParams = new JSONObject();
-		try {
-			requestParams.put("PageSize", 6);
-			requestParams.put("PageIndex", 1);
-			requestParams.put("TogoId", Integer.parseInt(body.getMaster()));
-			if (loginPreference.getLoginState()) {
-				requestParams.put("UserId",
-						Integer.parseInt(loginPreference.getDataID()));
-			} else {
-				requestParams.put("UserId", "");
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		task.request(BookingFragment.this.getActivity(),
-				HttpUrlManager.getFoodListByTogoUrl(), requestParams,
-				getFoodListByTogoListener);
-	}
-
-	/**
-	 * 获取菜品分类接口监听类
-	 */
-	private RequestListener<GetFoodListByTogoBean> getFoodListByTogoListener = new RequestListener<GetFoodListByTogoBean>() {
-
-		@Override
-		public void OnStart() {
-			LogUtil.d(FRAGMENT_TAG, "开始请求OnStart-----------");
-		}
-
-		@Override
-		public void onError(Exception e) {
-			dismissProgress();
-			LogUtil.d(FRAGMENT_TAG, "onError-----------" + e.getMessage());
-		}
-
-		@Override
-		public void OnPaserComplete(GetFoodListByTogoBean bean) {
-			dismissProgress();
-
-			if (bean != null) {
-				LogUtil.d(FRAGMENT_TAG, "OnPaserComplete:" + bean.getHead());
-				if ("00".equals(bean.getHead().getResultCode())) {
-					mHandler.obtainMessage(MSG_GET_FOODLIST_BY_TOGO_SUCCESS,
-							bean).sendToTarget();
-				} else {
-					mHandler.obtainMessage(MSG_GET_FOODLIST_BY_TOGO_FAIL,
-							bean.getHead().getResultInfo()).sendToTarget();
-				}
-			} else {
-				if (isAdded()) {
-					mHandler.obtainMessage(
-							MSG_GET_FOODLIST_BY_TOGO_FAIL,
-							getString(R.string.get_foodlist_by_togo_failed_string))
-							.sendToTarget();
-				}
-			}
-		}
-	};
 
 	/**
 	 * 向服务器请求获取购物车 <br/>
@@ -714,12 +644,6 @@ public class BookingFragment extends BaseFragment {
 				cartListData.clear();
 
 				bookingListAdapter.notifyDataSetChanged();
-				break;
-			case MSG_GET_FOODLIST_BY_TOGO_SUCCESS:
-
-				break;
-			case MSG_GET_FOODLIST_BY_TOGO_FAIL:
-
 				break;
 			default:
 				break;

@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,7 +61,6 @@ OnClickListener {
 
 	private TextView titleTv;
 	private UpRefreshListView goodsLv;
-	private RelativeLayout titleInclude;
 
 	@Override
 	protected void initData() {
@@ -108,7 +109,6 @@ OnClickListener {
 
 		titleTv = (TextView) this.findViewById(R.id.titleTv);
 		goodsLv = (UpRefreshListView) findViewById(R.id.goodsListView);
-		titleInclude = (RelativeLayout) findViewById(R.id.titleInclude);
 	}
 
 	@Override

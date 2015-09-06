@@ -1,6 +1,5 @@
 package com.company.ilunch.bean;
 
-import java.util.ArrayList;
 import com.alibaba.fastjson.annotation.JSONField;
 
 /**
@@ -8,15 +7,15 @@ import com.alibaba.fastjson.annotation.JSONField;
  */
 public class UpdateOrderStatusBean {
 	@JSONField(name = "Body")
-	private ArrayList<Body> body;
+	private Body body;
 	@JSONField(name = "Head")
 	private Head head;
 
-	public ArrayList<Body> getBody() {
+	public Body getBody() {
 		return body;
 	}
 
-	public void setBody(ArrayList<Body> body) {
+	public void setBody(Body body) {
 		this.body = body;
 	}
 

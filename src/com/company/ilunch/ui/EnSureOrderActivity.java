@@ -91,7 +91,7 @@ public class EnSureOrderActivity extends BaseActivity implements
 	private RadioButton wetchatRb;
 
 	private int SalesMethod;// 打包、订座、外卖
-	private String Remark;
+	private String Remark="无";
 	private String sendAddress;
 	private String currentId;
 

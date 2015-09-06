@@ -114,6 +114,8 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 	private LoginPreference loginPreference;
 
 	private ArrayList<GetCartListBean.Body> cartListData;
+	
+	private String nowLocation;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -253,11 +255,14 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 			locationTv.setText(ilunchPerference.getMyLocationCity()
 					+ ilunchPerference.getMyLocationQy()
 					+ ilunchPerference.getMyLocationDs());
-
-			Intent intent1 = new Intent(BookingFragment.UPDATE_LIST_ACTION_NAME);
-
-			// 发送广播
-			sendBroadcast(intent1);
+			
+			if(!TextUtils.isEmpty(nowLocation)&&!ilunchPerference.getMyLocationDs().equals(nowLocation)) {
+				
+				Intent intent1 = new Intent(BookingFragment.UPDATE_LIST_ACTION_NAME);
+				
+				// 发送广播
+				sendBroadcast(intent1);
+			}
 		}
 	}
 
@@ -893,6 +898,7 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 			enSureIntent.putExtra("SalesMethod", SalesMethod);
 			startActivity(enSureIntent);
 		} else if (v.getId() == R.id.locationRl) {
+			nowLocation = ilunchPerference.getMyLocationDs();
 			startActivity(new Intent(this, MyLocationActivity.class));
 		}
 	}

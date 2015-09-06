@@ -178,6 +178,8 @@ public class BookingFragment extends BaseFragment {
 						intent.putExtra("master", body.getMaster());
 						intent.putExtra("fpName", body.getName());
 						startActivity(intent);
+						
+						BookingFragment.this.getActivity().overridePendingTransition(R.anim.popup_enter, R.anim.popup_exit);
 					}
 				});
 		goodsLv.setAdapter(bookingListAdapter);

@@ -4,9 +4,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,7 +12,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -22,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +39,6 @@ import com.company.ilunch.net.RequestListener;
 import com.company.ilunch.preferences.IlunchPreference;
 import com.company.ilunch.preferences.LoginPreference;
 import com.company.ilunch.task.GetCartListTask;
-import com.company.ilunch.task.GetSTemplateListTask;
 import com.company.ilunch.task.SubmitMyOrderTask;
 import com.company.ilunch.task.UpdateOrderStatusTask;
 import com.company.ilunch.utils.AndroidUtils;
@@ -81,10 +76,10 @@ public class EnSureOrderActivity extends BaseActivity implements
 	private RelativeLayout eatTimeRl;
 	private TextView eatTimeTv;
 	private RelativeLayout cpbzRl;
+	private TextView cpbzTv;
 	private Button btn_sure;
 	private LinearLayout payTypeContainerLl;
 	private LinearLayout containserLl;
-	private View payTypeLineView;
 
 	private LinearLayout orderInfoLl;
 	private TextView orderInfoDesc;
@@ -134,6 +129,7 @@ public class EnSureOrderActivity extends BaseActivity implements
 		eatTimeRl = (RelativeLayout) findViewById(R.id.eatTimeRl);
 		eatTimeTv = (TextView) findViewById(R.id.eatTimeTv);
 		cpbzRl = (RelativeLayout) findViewById(R.id.cpbzRl);
+		cpbzTv = (TextView) findViewById(R.id.cpbzTv);
 		zfbRb = (RadioButton) findViewById(R.id.zfbRb);
 		wetchatRb = (RadioButton) findViewById(R.id.wetchatRb);
 		btn_sure = (Button) findViewById(R.id.btn_sure);
@@ -218,6 +214,10 @@ public class EnSureOrderActivity extends BaseActivity implements
 		if (!TextUtils.isEmpty(ilunchTimeAlert)) {
 			eatTimeTv.setText(String.format(getString(R.string.eat_time_desc),
 					ilunchPerference.getLunchTimeAlert()));
+		}
+		if (!TextUtils.isEmpty(Remark)) {
+			cpbzTv.setText(String.format(getString(R.string.cpbz_desc),
+					Remark));
 		}
 	}
 
@@ -508,7 +508,6 @@ public class EnSureOrderActivity extends BaseActivity implements
 				orderInfoLl.setVisibility(View.VISIBLE);
 
 				containserLl.setVisibility(View.GONE);
-				payTypeLineView.setVisibility(View.GONE);
 
 				orderInfoAddressTv.setText(String.format(
 						getString(R.string.default_address_desc),
@@ -653,8 +652,10 @@ public class EnSureOrderActivity extends BaseActivity implements
 			}
 			break;
 		case R.id.cpbzRl:
-			startActivityForResult(new Intent(EnSureOrderActivity.this,
-					CpbzActivity.class), 1);
+			Intent cpbzIntent = new Intent(EnSureOrderActivity.this,
+					CpbzActivity.class);
+			cpbzIntent.putExtra("Remark", Remark);
+			startActivityForResult(cpbzIntent, 1);
 			break;
 		default:
 			break;

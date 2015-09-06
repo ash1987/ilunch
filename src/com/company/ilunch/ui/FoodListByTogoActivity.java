@@ -3,14 +3,19 @@ package com.company.ilunch.ui;
 import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
+import android.view.ViewConfiguration;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.company.ilunch.IlunchApplication;
@@ -33,7 +38,7 @@ import com.company.ilunch.utils.LogUtil;
 import com.company.ilunch.widget.UpRefreshListView;
 
 public class FoodListByTogoActivity extends BaseActivity implements
-		OnClickListener {
+OnClickListener {
 	public final static String TAG = "com.company.ilunch";
 
 	private final static int MSG_GET_FOODLIST_BY_TOGO_SUCCESS = 0x01;// 　获取商家菜品列表成功
@@ -54,11 +59,10 @@ public class FoodListByTogoActivity extends BaseActivity implements
 
 	private TextView titleTv;
 	private UpRefreshListView goodsLv;
+	private RelativeLayout titleInclude;
 
 	@Override
 	protected void initData() {
-		this.requestWindowFeature(Window.FEATURE_NO_TITLE);// 去掉标题栏
-
 		if (getIntent().getExtras() != null) {
 			Bundle bundle = getIntent().getExtras();
 			if (bundle.containsKey("master")) {
@@ -71,16 +75,46 @@ public class FoodListByTogoActivity extends BaseActivity implements
 	}
 
 	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			this.finish();
+			overridePendingTransition(R.anim.popup_enter, R.anim.popup_exit);
+			return true;
+		}
+
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override  
+	public boolean onTouchEvent(MotionEvent event) {  
+		if (event.getAction() == MotionEvent.ACTION_DOWN && isOutOfBounds(this, event)) {  
+			this.finish();
+			overridePendingTransition(R.anim.popup_enter, R.anim.popup_exit);  
+		}  
+		return super.onTouchEvent(event);  
+	}  
+
+	private boolean isOutOfBounds(Activity context, MotionEvent event) {  
+		final int x = (int) event.getX();  
+		final int y = (int) event.getY();  
+		final int slop = ViewConfiguration.get(context).getScaledWindowTouchSlop();  
+		final View decorView = context.getWindow().getDecorView();  
+		return (x < -slop) || (y < -slop)|| (x > (decorView.getWidth() + slop))|| (y > (decorView.getHeight() + slop));  
+	}
+
+	@Override
 	protected void initView() {
 		setContentView(R.layout.foodlistbytogo);
 
 		titleTv = (TextView) this.findViewById(R.id.titleTv);
 		goodsLv = (UpRefreshListView) findViewById(R.id.goodsListView);
+		titleInclude = (RelativeLayout) findViewById(R.id.titleInclude);
 	}
 
 	@Override
 	protected void setAttribute() {
 		titleTv.setText(fpName);
+		get_root_view(FoodListByTogoActivity.this).setVisibility(View.GONE);
 		loginPreference = new LoginPreference(this);
 
 		doGetFoodListByTogo();
@@ -88,67 +122,67 @@ public class FoodListByTogoActivity extends BaseActivity implements
 		bookingListAdapter = new BookingListAdapter1(this, foodList, null,
 				new Callback() {
 
-					@Override
-					public void addToCart(
-							com.company.ilunch.bean.GetFoodListBean.Body body) {
-						doAddToCart(body);
-					}
+			@Override
+			public void addToCart(
+					com.company.ilunch.bean.GetFoodListBean.Body body) {
+				doAddToCart(body);
+			}
 
-					@Override
-					public void updateCart(
-							com.company.ilunch.bean.GetFoodListBean.Body body,
-							int num) {
-						doUpdateCart(body, num);
-					}
+			@Override
+			public void updateCart(
+					com.company.ilunch.bean.GetFoodListBean.Body body,
+					int num) {
+				doUpdateCart(body, num);
+			}
 
-					@Override
-					public void addFav(
-							com.company.ilunch.bean.GetFoodListBean.Body body) {
-						if (!loginPreference.getLoginState()) {
-							Toast.makeText(FoodListByTogoActivity.this,
-									R.string.please_login, Toast.LENGTH_SHORT)
-									.show();
-							return;
-						}
+			@Override
+			public void addFav(
+					com.company.ilunch.bean.GetFoodListBean.Body body) {
+				if (!loginPreference.getLoginState()) {
+					Toast.makeText(FoodListByTogoActivity.this,
+							R.string.please_login, Toast.LENGTH_SHORT)
+							.show();
+					return;
+				}
 
-						doAddMyCollect(body);
-					}
+				doAddMyCollect(body);
+			}
 
-					@Override
-					public void deleCart(
-							com.company.ilunch.bean.GetFoodListBean.Body body) {
-						Intent intent3 = new Intent(
-								FoodListBaseActivity.DEL_CART_ACTION_NAME);
-						intent3.putExtra("pid", body.getUnid());
+			@Override
+			public void deleCart(
+					com.company.ilunch.bean.GetFoodListBean.Body body) {
+				Intent intent3 = new Intent(
+						FoodListBaseActivity.DEL_CART_ACTION_NAME);
+				intent3.putExtra("pid", body.getUnid());
 
-						// 发送广播
-						FoodListByTogoActivity.this.sendBroadcast(intent3);
-					}
+				// 发送广播
+				FoodListByTogoActivity.this.sendBroadcast(intent3);
+			}
 
-					@Override
-					public void addComment(
-							com.company.ilunch.bean.GetFoodListBean.Body body) {
-						if (!loginPreference.getLoginState()) {
-							Toast.makeText(FoodListByTogoActivity.this,
-									R.string.please_login, Toast.LENGTH_SHORT)
-									.show();
-							return;
-						}
+			@Override
+			public void addComment(
+					com.company.ilunch.bean.GetFoodListBean.Body body) {
+				if (!loginPreference.getLoginState()) {
+					Toast.makeText(FoodListByTogoActivity.this,
+							R.string.please_login, Toast.LENGTH_SHORT)
+							.show();
+					return;
+				}
 
-						Intent cfIntent = new Intent(
-								FoodListByTogoActivity.this,
-								CommentFoodActivity.class);
-						cfIntent.putExtra("TogoId", body.getMaster());
-						cfIntent.putExtra("foodName", body.getFoodName());
-						cfIntent.putExtra("picture", body.getPicture());
-						startActivity(cfIntent);
-					}
+				Intent cfIntent = new Intent(
+						FoodListByTogoActivity.this,
+						CommentFoodActivity.class);
+				cfIntent.putExtra("TogoId", body.getMaster());
+				cfIntent.putExtra("foodName", body.getFoodName());
+				cfIntent.putExtra("picture", body.getPicture());
+				startActivity(cfIntent);
+			}
 
-					@Override
-					public void ShowFoodList(
-							com.company.ilunch.bean.GetFoodListBean.Body body) {
-					}
-				});
+			@Override
+			public void ShowFoodList(
+					com.company.ilunch.bean.GetFoodListBean.Body body) {
+			}
+		});
 		goodsLv.setAdapter(bookingListAdapter);
 	}
 
@@ -203,7 +237,7 @@ public class FoodListByTogoActivity extends BaseActivity implements
 				LogUtil.d(TAG, "OnPaserComplete:" + bean.getHead());
 				if ("00".equals(bean.getHead().getResultCode())) {
 					mHandler.obtainMessage(MSG_UPDATE_CART_SUCCESS, bean)
-							.sendToTarget();
+					.sendToTarget();
 				} else {
 					mHandler.obtainMessage(MSG_UPDATE_CART_FAIL,
 							bean.getHead().getResultInfo()).sendToTarget();
@@ -272,7 +306,7 @@ public class FoodListByTogoActivity extends BaseActivity implements
 				LogUtil.d(TAG, "OnPaserComplete:" + bean.getHead());
 				if ("00".equals(bean.getHead().getResultCode())) {
 					mHandler.obtainMessage(MSG_ADD_TO_CART_SUCCESS, bean)
-							.sendToTarget();
+					.sendToTarget();
 				} else {
 					mHandler.obtainMessage(MSG_ADD_TO_CART_FAIL,
 							bean.getHead().getResultInfo()).sendToTarget();
@@ -331,7 +365,7 @@ public class FoodListByTogoActivity extends BaseActivity implements
 				LogUtil.d(TAG, "OnPaserComplete:" + bean.getHead());
 				if ("00".equals(bean.getHead().getResultCode())) {
 					mHandler.obtainMessage(MSG_ADD_COLLECT_SUCCESS, bean)
-							.sendToTarget();
+					.sendToTarget();
 				} else {
 					mHandler.obtainMessage(MSG_ADD_COLLECT_FAIL,
 							bean.getHead().getResultInfo()).sendToTarget();
@@ -409,6 +443,10 @@ public class FoodListByTogoActivity extends BaseActivity implements
 		}
 	};
 
+	private View get_root_view(Activity context) {    
+		return ((ViewGroup)context.findViewById(android.R.id.content)).getChildAt(0);    
+	} 
+
 	/**
 	 * handler用于处理网络请求的返回数据
 	 */
@@ -428,11 +466,14 @@ public class FoodListByTogoActivity extends BaseActivity implements
 				}
 
 				bookingListAdapter.notifyDataSetChanged();
+
+				get_root_view(FoodListByTogoActivity.this).setVisibility(View.VISIBLE);
 				break;
 			case MSG_GET_FOODLIST_BY_TOGO_FAIL:
 				Toast.makeText(FoodListByTogoActivity.this,
 						getString(R.string.get_foodlist_by_togo_fail),
 						Toast.LENGTH_SHORT).show();
+				finish();
 				break;
 			case MSG_ADD_TO_CART_SUCCESS:
 				AddToCartBean atcBean = (AddToCartBean) object;
@@ -463,7 +504,7 @@ public class FoodListByTogoActivity extends BaseActivity implements
 				Toast.makeText(FoodListByTogoActivity.this,
 						R.string.add_collect_success_string, Toast.LENGTH_SHORT)
 						.show();
-				
+
 				doGetFoodListByTogo();
 				break;
 			case MSG_ADD_COLLECT_FAIL:

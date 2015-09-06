@@ -1,11 +1,14 @@
 package com.company.ilunch.ui;
 
 import java.util.ArrayList;
+
 import org.json.JSONObject;
-import android.annotation.SuppressLint;
+
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -18,6 +21,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+
 import com.company.ilunch.R;
 import com.company.ilunch.base.BaseActivity;
 import com.company.ilunch.bean.GetSTemplateListBean;
@@ -39,14 +43,19 @@ public class CpbzActivity extends BaseActivity implements OnClickListener {
 	private RadioGroup cpbzRg;
 	private Button btn_submit;
 	
-	private boolean isFirst = true;
-
 	private String Remark;
 	private ArrayList<GetSTemplateListBean.Body> stllDataList;
 
 	@Override
 	protected void initData() {
 		stllDataList = new ArrayList<GetSTemplateListBean.Body>();
+		
+		if (getIntent() != null) {
+			Bundle bundle = getIntent().getExtras();
+			if (bundle != null && bundle.containsKey("Remark")) {
+				Remark = bundle.getString("Remark");
+			}
+		}
 	}
 
 	@Override
@@ -150,6 +159,20 @@ public class CpbzActivity extends BaseActivity implements OnClickListener {
 				}
 
 				addRadioBtns();
+				
+				if(!TextUtils.isEmpty(Remark) && cpbzRg.getChildCount()>0) {
+					for(int i=0;i<cpbzRg.getChildCount();i++) {
+						LinearLayout ll = (LinearLayout) cpbzRg.getChildAt(i);
+						for(int j=0;j<ll.getChildCount();j++) {
+							RadioButton rb = (RadioButton) ll.getChildAt(j);
+							
+							if(Remark.equals(rb.getText().toString())) {
+								rb.setChecked(true);
+								break;
+							}
+						}
+					}
+				}
 				break;
 			case MSG_GET_STEMPLATE_LIST_FAIL:
 				Toast.makeText(CpbzActivity.this, (String) msg.obj,
@@ -161,7 +184,6 @@ public class CpbzActivity extends BaseActivity implements OnClickListener {
 		};
 	};
 
-	@SuppressLint("NewApi")
 	private void addRadioBtns() {
 		if (stllDataList == null || stllDataList.size() == 0) {
 			return;
@@ -199,12 +221,8 @@ public class CpbzActivity extends BaseActivity implements OnClickListener {
 			rb.setTag(stllDataList.get(i));
 
 			ll.addView(rb);
-
+			
 			rb.setOnCheckedChangeListener(new BzOnCheckedListener(i));
-
-			if (i == 0) {
-				rb.setChecked(true);
-			}
 		}
 	}
 
@@ -217,11 +235,6 @@ public class CpbzActivity extends BaseActivity implements OnClickListener {
 
 		@Override
 		public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
-			if(isFirst) {
-				isFirst = false;
-				return;
-			}
-			
 			cb.setChecked(true);
 			for (int i = 0; i < stllDataList.size(); i++) {
 				stllDataList.get(i).setIscheck(false);

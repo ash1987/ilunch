@@ -671,12 +671,6 @@ public class BookingFragment extends BaseFragment {
 			if (action.equals(UPDATE_LIST_ACTION_NAME)) {
 				isRefreshing = true;
 				pageNo = 1;
-				if (foodList != null) {
-					foodList.clear();
-				}
-				if (cartListData != null) {
-					cartListData.clear();
-				}
 
 				doGetCartList();
 				doGetFoodList();
@@ -688,12 +682,6 @@ public class BookingFragment extends BaseFragment {
 	protected void lazyLoad() {
 		isRefreshing = true;
 		pageNo = 1;
-		if (foodList != null) {
-			foodList.clear();
-		}
-		if (cartListData != null) {
-			cartListData.clear();
-		}
 
 		doGetCartList();
 		doGetFoodList();

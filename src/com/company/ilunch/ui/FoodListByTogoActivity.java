@@ -582,6 +582,16 @@ OnClickListener {
 						R.string.add_collect_success_string, Toast.LENGTH_SHORT)
 						.show();
 
+				Intent intent3 = new Intent(
+						BookingFragment.UPDATE_LIST_ACTION_NAME);
+
+				// 发送广播
+				sendBroadcast(intent3);
+				
+				if(foodList != null) {
+					foodList.clear();
+				}
+				
 				doGetFoodListByTogo();
 				break;
 			case MSG_ADD_COLLECT_FAIL:
@@ -593,11 +603,11 @@ OnClickListener {
 						R.string.del_collect_success_string, Toast.LENGTH_SHORT)
 						.show();
 				
-				Intent intent3 = new Intent(
+				Intent intent4 = new Intent(
 						BookingFragment.UPDATE_LIST_ACTION_NAME);
 
 				// 发送广播
-				sendBroadcast(intent3);
+				sendBroadcast(intent4);
 				
 				if(foodList != null) {
 					foodList.clear();

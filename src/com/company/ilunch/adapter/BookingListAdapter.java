@@ -59,6 +59,8 @@ public class BookingListAdapter extends BaseAdapter {
 		public void addComment(Body body);
 
 		public void addFav(Body body);
+		
+		public void delFav(Body body);
 
 		public void deleCart(Body body);
 
@@ -123,7 +125,7 @@ public class BookingListAdapter extends BaseAdapter {
 		holder.commentIv.setOnClickListener(new AddComment(data.get(position),
 				callback));
 		holder.favIv
-				.setOnClickListener(new AddFav(data.get(position), callback));
+				.setOnClickListener(new AddOrDelFav(data.get(position), callback));
 		holder.goodRl.setOnClickListener(new ShowMerchantFoodList(data
 				.get(position), callback));
 
@@ -204,18 +206,22 @@ public class BookingListAdapter extends BaseAdapter {
 		}
 	}
 
-	public class AddFav implements OnClickListener {
+	public class AddOrDelFav implements OnClickListener {
 		private Body body;
 		private Callback callback;
 
-		AddFav(Body body, Callback callback) {
+		AddOrDelFav(Body body, Callback callback) {
 			this.body = body;
 			this.callback = callback;
 		}
 
 		@Override
 		public void onClick(View v) {
-			callback.addFav(body);
+			if(Boolean.parseBoolean(body.getIsCollected())) {
+				callback.delFav(body);
+			} else {
+				callback.addFav(body);
+			}
 		}
 	}
 

@@ -23,6 +23,7 @@ import com.company.ilunch.adapter.BookingListAdapter;
 import com.company.ilunch.adapter.BookingListAdapter.Callback;
 import com.company.ilunch.bean.AddMyCollectBean;
 import com.company.ilunch.bean.AddToCartBean;
+import com.company.ilunch.bean.DeleMyCollectBean;
 import com.company.ilunch.bean.GetCartListBean;
 import com.company.ilunch.bean.GetFoodListBean;
 import com.company.ilunch.bean.GetShopDataBean.Body;
@@ -33,6 +34,7 @@ import com.company.ilunch.preferences.IlunchPreference;
 import com.company.ilunch.preferences.LoginPreference;
 import com.company.ilunch.task.AddMyCollectTask;
 import com.company.ilunch.task.AddToCartTask;
+import com.company.ilunch.task.DeleMyCollectTask;
 import com.company.ilunch.task.GetCartListTask;
 import com.company.ilunch.task.GetFoodListTask;
 import com.company.ilunch.task.UpdateCartTask;
@@ -40,6 +42,7 @@ import com.company.ilunch.ui.CommentFoodActivity;
 import com.company.ilunch.ui.FoodListBaseActivity;
 import com.company.ilunch.ui.FoodListByTogoActivity;
 import com.company.ilunch.utils.LogUtil;
+import com.company.ilunch.widget.CustomToast;
 import com.company.ilunch.widget.UpRefreshListView;
 import com.company.ilunch.widget.UpRefreshListView.OnRefreshListener;
 import com.company.ilunch.widget.UpRefreshListView.onMoreListener;
@@ -62,6 +65,8 @@ public class BookingFragment extends BaseFragment {
 	private final static int MSG_ADD_COLLECT_FAIL = 0x08;// 添加收藏失敗
 	private final static int MSG_GET_CART_LIST_SUCCESS = 0x09;// 　获取购物车成功
 	private final static int MSG_GET_CART_LIST_FAIL = 0x0a;// 获取购物车失敗
+	private final static int MSG_DEL_COLLECT_SUCCESS = 0x0b;// 　删除收藏成功
+	private final static int MSG_DEL_COLLECT_FAIL = 0x0c;// 删除收藏失敗
 
 	private BookingListAdapter bookingListAdapter;
 	private ArrayList<GetFoodListBean.Body> foodList;
@@ -179,7 +184,20 @@ public class BookingFragment extends BaseFragment {
 						intent.putExtra("fpName", body.getName());
 						startActivity(intent);
 						
-						BookingFragment.this.getActivity().overridePendingTransition(R.anim.popup_enter, R.anim.popup_exit);
+//						BookingFragment.this.getActivity().overridePendingTransition(R.anim.popup_enter, R.anim.popup_exit);
+					}
+
+					@Override
+					public void delFav(
+							com.company.ilunch.bean.GetFoodListBean.Body body) {
+						if (!loginPreference.getLoginState()) {
+							Toast.makeText(BookingFragment.this.getActivity(),
+									R.string.please_login, Toast.LENGTH_SHORT)
+									.show();
+							return;
+						}
+
+						doDelMyCollect(body);
 					}
 				});
 		goodsLv.setAdapter(bookingListAdapter);
@@ -283,6 +301,64 @@ public class BookingFragment extends BaseFragment {
 		}
 	};
 
+	/**
+	 * 向服务器请求删除收藏 <br/>
+	 * 
+	 */
+	private void doDelMyCollect(GetFoodListBean.Body body) {
+		DeleMyCollectTask task = new DeleMyCollectTask();
+
+		JSONObject requestParams = new JSONObject();
+		try {
+			if (loginPreference.getLoginState()) {
+				requestParams.put("UserId",
+						Integer.parseInt(loginPreference.getDataID()));
+			} else {
+				requestParams.put("UserId", "");
+			}
+			requestParams.put("FoodId", Integer.parseInt(body.getUnid()));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		task.request(BookingFragment.this.getActivity(), HttpUrlManager.DEL_MY_COLLECT_STRING, requestParams,
+				delMyCollectListener);
+	}
+
+	/**
+	 * 删除收藏接口监听类
+	 */
+	private RequestListener<DeleMyCollectBean> delMyCollectListener = new RequestListener<DeleMyCollectBean>() {
+
+		@Override
+		public void OnStart() {
+			LogUtil.d(FRAGMENT_TAG, "开始请求OnStart-----------");
+		}
+
+		@Override
+		public void onError(Exception e) {
+			LogUtil.d(FRAGMENT_TAG, "onError-----------" + e.getMessage());
+		}
+
+		@Override
+		public void OnPaserComplete(DeleMyCollectBean bean) {
+			if (bean != null) {
+				LogUtil.d(FRAGMENT_TAG, "OnPaserComplete:" + bean.getHead());
+				if ("00".equals(bean.getHead().getResultCode())) {
+					mHandler.obtainMessage(MSG_DEL_COLLECT_SUCCESS, bean)
+							.sendToTarget();
+				} else {
+					mHandler.obtainMessage(MSG_DEL_COLLECT_FAIL,
+							bean.getHead().getResultInfo()).sendToTarget();
+				}
+			} else {
+				mHandler.obtainMessage(MSG_DEL_COLLECT_FAIL,
+						getString(R.string.del_collect_failed_string))
+						.sendToTarget();
+			}
+		}
+	};
+	
 	/**
 	 * 向服务器请求添加收藏 <br/>
 	 * 
@@ -647,6 +723,21 @@ public class BookingFragment extends BaseFragment {
 
 				bookingListAdapter.notifyDataSetChanged();
 				break;
+			case MSG_DEL_COLLECT_SUCCESS:// 删除成功
+				Toast.makeText(BookingFragment.this.getActivity(),
+						R.string.del_collect_success_string, Toast.LENGTH_SHORT)
+						.show();
+				
+				isRefreshing = true;
+				pageNo = 1;
+
+				doGetCartList();
+				doGetFoodList();
+				break;
+			case MSG_DEL_COLLECT_FAIL:
+				CustomToast.getToast(BookingFragment.this.getActivity(),
+						String.valueOf(object), Toast.LENGTH_SHORT).show();
+				break;	
 			default:
 				break;
 			}

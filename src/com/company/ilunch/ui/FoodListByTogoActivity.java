@@ -22,21 +22,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.company.ilunch.IlunchApplication;
 import com.company.ilunch.R;
-import com.company.ilunch.adapter.BookingListAdapter1;
-import com.company.ilunch.adapter.BookingListAdapter1.Callback;
+import com.company.ilunch.adapter.BookingListAdapter;
+import com.company.ilunch.adapter.BookingListAdapter.Callback;
 import com.company.ilunch.base.BaseActivity;
 import com.company.ilunch.bean.AddMyCollectBean;
 import com.company.ilunch.bean.AddToCartBean;
+import com.company.ilunch.bean.DeleMyCollectBean;
 import com.company.ilunch.bean.GetFoodListBean;
+import com.company.ilunch.bean.GetFoodListBean.Body;
 import com.company.ilunch.bean.UpdateCartBean;
+import com.company.ilunch.fragment.BookingFragment;
 import com.company.ilunch.net.HttpUrlManager;
 import com.company.ilunch.net.RequestListener;
 import com.company.ilunch.preferences.LoginPreference;
 import com.company.ilunch.task.AddMyCollectTask;
 import com.company.ilunch.task.AddToCartTask;
+import com.company.ilunch.task.DeleMyCollectTask;
 import com.company.ilunch.task.GetFoodListTask;
 import com.company.ilunch.task.UpdateCartTask;
 import com.company.ilunch.utils.LogUtil;
+import com.company.ilunch.widget.CustomToast;
 import com.company.ilunch.widget.UpRefreshListView;
 
 public class FoodListByTogoActivity extends BaseActivity implements
@@ -51,8 +56,10 @@ OnClickListener {
 	private final static int MSG_UPDATE_CART_FAIL = 0x06;// 更新购物车失敗
 	private final static int MSG_ADD_COLLECT_SUCCESS = 0x07;// 　添加收藏成功
 	private final static int MSG_ADD_COLLECT_FAIL = 0x08;// 添加收藏失敗
+	private final static int MSG_DEL_COLLECT_SUCCESS = 0x09;// 　删除收藏成功
+	private final static int MSG_DEL_COLLECT_FAIL = 0x0a;// 删除收藏失敗
 
-	private BookingListAdapter1 bookingListAdapter;
+	private BookingListAdapter bookingListAdapter;
 	private ArrayList<GetFoodListBean.Body> foodList;
 	private LoginPreference loginPreference;
 
@@ -75,33 +82,33 @@ OnClickListener {
 		foodList = new ArrayList<GetFoodListBean.Body>();
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			this.finish();
-			overridePendingTransition(R.anim.popup_enter, R.anim.popup_exit);
-			return true;
-		}
-
-		return super.onKeyDown(keyCode, event);
-	}
-
-	@Override  
-	public boolean onTouchEvent(MotionEvent event) {  
-		if (event.getAction() == MotionEvent.ACTION_DOWN && isOutOfBounds(this, event)) {  
-			this.finish();
-			overridePendingTransition(R.anim.popup_enter, R.anim.popup_exit);  
-		}  
-		return super.onTouchEvent(event);  
-	}  
-
-	private boolean isOutOfBounds(Activity context, MotionEvent event) {  
-		final int x = (int) event.getX();  
-		final int y = (int) event.getY();  
-		final int slop = ViewConfiguration.get(context).getScaledWindowTouchSlop();  
-		final View decorView = context.getWindow().getDecorView();  
-		return (x < -slop) || (y < -slop)|| (x > (decorView.getWidth() + slop))|| (y > (decorView.getHeight() + slop));  
-	}
+//	@Override
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//		if (keyCode == KeyEvent.KEYCODE_BACK) {
+//			this.finish();
+//			overridePendingTransition(R.anim.popup_enter, R.anim.popup_exit);
+//			return true;
+//		}
+//
+//		return super.onKeyDown(keyCode, event);
+//	}
+//
+//	@Override  
+//	public boolean onTouchEvent(MotionEvent event) {  
+//		if (event.getAction() == MotionEvent.ACTION_DOWN && isOutOfBounds(this, event)) {  
+//			this.finish();
+//			overridePendingTransition(R.anim.popup_enter, R.anim.popup_exit);  
+//		}  
+//		return super.onTouchEvent(event);  
+//	}  
+//
+//	private boolean isOutOfBounds(Activity context, MotionEvent event) {  
+//		final int x = (int) event.getX();  
+//		final int y = (int) event.getY();  
+//		final int slop = ViewConfiguration.get(context).getScaledWindowTouchSlop();  
+//		final View decorView = context.getWindow().getDecorView();  
+//		return (x < -slop) || (y < -slop)|| (x > (decorView.getWidth() + slop))|| (y > (decorView.getHeight() + slop));  
+//	}
 
 	@Override
 	protected void initView() {
@@ -114,12 +121,12 @@ OnClickListener {
 	@Override
 	protected void setAttribute() {
 		titleTv.setText(fpName);
-		get_root_view(FoodListByTogoActivity.this).setVisibility(View.GONE);
+//		get_root_view(FoodListByTogoActivity.this).setVisibility(View.GONE);
 		loginPreference = new LoginPreference(this);
 
 		doGetFoodListByTogo();
 
-		bookingListAdapter = new BookingListAdapter1(this, foodList, null,
+		bookingListAdapter = new BookingListAdapter(this, foodList, null,
 				new Callback() {
 
 			@Override
@@ -182,6 +189,18 @@ OnClickListener {
 			public void ShowFoodList(
 					com.company.ilunch.bean.GetFoodListBean.Body body) {
 			}
+
+			@Override
+			public void delFav(Body body) {
+				if (!loginPreference.getLoginState()) {
+					Toast.makeText(FoodListByTogoActivity.this,
+							R.string.please_login, Toast.LENGTH_SHORT)
+							.show();
+					return;
+				}
+
+				doDelMyCollect(body);
+			}
 		});
 		goodsLv.setAdapter(bookingListAdapter);
 	}
@@ -194,6 +213,64 @@ OnClickListener {
 		}
 	}
 
+	/**
+	 * 向服务器请求删除收藏 <br/>
+	 * 
+	 */
+	private void doDelMyCollect(GetFoodListBean.Body body) {
+		DeleMyCollectTask task = new DeleMyCollectTask();
+
+		JSONObject requestParams = new JSONObject();
+		try {
+			if (loginPreference.getLoginState()) {
+				requestParams.put("UserId",
+						Integer.parseInt(loginPreference.getDataID()));
+			} else {
+				requestParams.put("UserId", "");
+			}
+			requestParams.put("FoodId", Integer.parseInt(body.getUnid()));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		task.request(FoodListByTogoActivity.this, HttpUrlManager.DEL_MY_COLLECT_STRING, requestParams,
+				delMyCollectListener);
+	}
+
+	/**
+	 * 删除收藏接口监听类
+	 */
+	private RequestListener<DeleMyCollectBean> delMyCollectListener = new RequestListener<DeleMyCollectBean>() {
+
+		@Override
+		public void OnStart() {
+			LogUtil.d(TAG, "开始请求OnStart-----------");
+		}
+
+		@Override
+		public void onError(Exception e) {
+			LogUtil.d(TAG, "onError-----------" + e.getMessage());
+		}
+
+		@Override
+		public void OnPaserComplete(DeleMyCollectBean bean) {
+			if (bean != null) {
+				LogUtil.d(TAG, "OnPaserComplete:" + bean.getHead());
+				if ("00".equals(bean.getHead().getResultCode())) {
+					mHandler.obtainMessage(MSG_DEL_COLLECT_SUCCESS, bean)
+							.sendToTarget();
+				} else {
+					mHandler.obtainMessage(MSG_DEL_COLLECT_FAIL,
+							bean.getHead().getResultInfo()).sendToTarget();
+				}
+			} else {
+				mHandler.obtainMessage(MSG_DEL_COLLECT_FAIL,
+						getString(R.string.del_collect_failed_string))
+						.sendToTarget();
+			}
+		}
+	};
+	
 	/**
 	 * 向服务器请求更新购物车 <br/>
 	 * 
@@ -467,7 +544,7 @@ OnClickListener {
 
 				bookingListAdapter.notifyDataSetChanged();
 
-				get_root_view(FoodListByTogoActivity.this).setVisibility(View.VISIBLE);
+//				get_root_view(FoodListByTogoActivity.this).setVisibility(View.VISIBLE);
 				break;
 			case MSG_GET_FOODLIST_BY_TOGO_FAIL:
 				Toast.makeText(FoodListByTogoActivity.this,
@@ -511,6 +588,27 @@ OnClickListener {
 				Toast.makeText(FoodListByTogoActivity.this, (String) object,
 						Toast.LENGTH_SHORT).show();
 				break;
+			case MSG_DEL_COLLECT_SUCCESS:// 删除成功
+				Toast.makeText(FoodListByTogoActivity.this,
+						R.string.del_collect_success_string, Toast.LENGTH_SHORT)
+						.show();
+				
+				Intent intent3 = new Intent(
+						BookingFragment.UPDATE_LIST_ACTION_NAME);
+
+				// 发送广播
+				sendBroadcast(intent3);
+				
+				if(foodList != null) {
+					foodList.clear();
+				}
+				
+				doGetFoodListByTogo();
+				break;
+			case MSG_DEL_COLLECT_FAIL:
+				CustomToast.getToast(FoodListByTogoActivity.this,
+						String.valueOf(object), Toast.LENGTH_SHORT).show();
+				break;		
 			default:
 				break;
 			}

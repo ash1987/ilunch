@@ -163,13 +163,13 @@ public class MyFavActivity extends BaseActivity implements OnClickListener {
 		}
 
 		task.request(this, HttpUrlManager.DEL_MY_COLLECT_STRING, requestParams,
-				addMyCollectListener);
+				delMyCollectListener);
 	}
 
 	/**
 	 * 删除收藏接口监听类
 	 */
-	private RequestListener<DeleMyCollectBean> addMyCollectListener = new RequestListener<DeleMyCollectBean>() {
+	private RequestListener<DeleMyCollectBean> delMyCollectListener = new RequestListener<DeleMyCollectBean>() {
 
 		@Override
 		public void OnStart() {

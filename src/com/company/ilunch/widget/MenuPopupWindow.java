@@ -11,9 +11,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -87,11 +85,15 @@ public class MenuPopupWindow extends PopupWindow {
 	private void initData() {
 		list.clear();
 		
+		Body allBody = new Body();
+		allBody.setClassname(mContext.getString(R.string.menu_all));
+		list.add(allBody);
+		
 		IlunchPreference iPreference = new IlunchPreference(mContext);
 		GetShopDataBean gsdBean = JSON.toJavaObject(
 				JSON.parseObject(iPreference.getShopData()),
 				GetShopDataBean.class);
-		list = gsdBean.getBody();
+		list.addAll(gsdBean.getBody());
 		
 		Body scBody = new Body();
 		scBody.setClassname(mContext.getString(R.string.menu_sc));

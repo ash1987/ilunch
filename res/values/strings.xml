@@ -473,6 +473,7 @@
     <string name="update_city">切换</string>
 
     <!-- menu string -->
+    <string name="menu_all">全部</string>
     <string name="menu_tc">套餐</string>
     <string name="menu_f">饭</string>
     <string name="menu_fm">粉面</string>

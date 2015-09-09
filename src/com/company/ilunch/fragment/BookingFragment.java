@@ -82,14 +82,16 @@ public class BookingFragment extends BaseFragment {
 
 	private Body data;
 	private int SalesMethod;// 销售方式
+	private String other;
 
 	public BookingFragment() {
 		super();
 	}
 
-	public BookingFragment(Body body, int SalesMethod) {
+	public BookingFragment(Body body, int SalesMethod, String other) {
 		this.data = body;
 		this.SalesMethod = SalesMethod;
+		this.other = other;
 	}
 
 	@Override
@@ -576,7 +578,11 @@ public class BookingFragment extends BaseFragment {
 			requestParams.put("KeyWords", "");
 			requestParams.put("SalesMethod", SalesMethod);
 			if (data == null) {
-				requestParams.put("FoodType", "sc");
+				if("all".equals(other)) {
+					requestParams.put("FoodType", "all");
+				} else {
+					requestParams.put("FoodType", "sc");
+				}
 			} else {
 				requestParams.put("FoodType", data.getClassname());
 			}

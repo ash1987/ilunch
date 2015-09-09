@@ -278,6 +278,27 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 		if (bodyList == null || bodyList.size() == 0) {
 			return;
 		}
+		
+		RadioButton rb1 = new RadioButton(this);
+		rb1.setId(bodyList.size()+1);
+		RadioGroup.LayoutParams params1 = new RadioGroup.LayoutParams(
+				bottomLine, LayoutParams.MATCH_PARENT);
+		rb1.setLayoutParams(params1);
+		Bitmap a1 = null;
+		rb1.setButtonDrawable(new BitmapDrawable(a1));
+		rb1.setChecked(true);
+		
+		rb1.setGravity(Gravity.CENTER);
+		rb1.setTextColor(Color.parseColor("#555555"));
+		if ("XLH".equals(AndroidUtils.getDencityType(this))) {
+			rb1.setTextSize(AndroidUtils.sp2px(this, 5));
+		} else {
+			rb1.setTextSize(AndroidUtils.sp2px(this, 8));
+		}
+		rb1.setText("全部");
+		rb1.setTag(null);
+
+		mRadioGroup.addView(rb1);
 
 		for (int i = 0; i < bodyList.size(); i++) {
 			RadioButton rb = new RadioButton(this);
@@ -287,11 +308,7 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 			rb.setLayoutParams(params);
 			Bitmap a = null;
 			rb.setButtonDrawable(new BitmapDrawable(a));
-			if (i == 0) {
-				rb.setChecked(true);
-			} else {
-				rb.setChecked(false);
-			}
+			rb.setChecked(false);
 			rb.setGravity(Gravity.CENTER);
 			rb.setTextColor(Color.parseColor("#555555"));
 			if ("XLH".equals(AndroidUtils.getDencityType(this))) {
@@ -329,11 +346,13 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 	private void iniVariable() {
 		ArrayList<Fragment> fragments = new ArrayList<Fragment>();
 
+		fragments.add(new BookingFragment(null, SalesMethod, "all"));
+		
 		for (int i = 0; i < bodyList.size(); i++) {
-			fragments.add(new BookingFragment(bodyList.get(i), SalesMethod));
+			fragments.add(new BookingFragment(bodyList.get(i), SalesMethod, ""));
 		}
 
-		fragments.add(new BookingFragment(null, SalesMethod));
+		fragments.add(new BookingFragment(null, SalesMethod, "sc"));
 
 		FragAdapter fAdapter = new FragAdapter(getSupportFragmentManager(),
 				mViewPager);

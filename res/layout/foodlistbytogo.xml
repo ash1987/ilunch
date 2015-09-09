@@ -11,6 +11,14 @@
         android:layout_height="@dimen/head_title_height"
         android:background="@drawable/top_bar_bg" >
 
+        <ImageView
+            android:id="@+id/backIv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:src="@drawable/jt_left_white" />
+
         <TextView
             android:id="@+id/titleTv"
             android:layout_width="wrap_content"

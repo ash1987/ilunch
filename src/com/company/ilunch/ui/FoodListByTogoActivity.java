@@ -1,25 +1,23 @@
 package com.company.ilunch.ui;
 
 import java.util.ArrayList;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.company.ilunch.IlunchApplication;
 import com.company.ilunch.R;
 import com.company.ilunch.adapter.BookingListAdapter;
@@ -66,6 +64,7 @@ OnClickListener {
 	private String togoId;// 商户ID
 	private String fpName;// 商户名称
 
+	private ImageView backIv;// 返回
 	private TextView titleTv;
 	private UpRefreshListView goodsLv;
 
@@ -82,38 +81,39 @@ OnClickListener {
 		foodList = new ArrayList<GetFoodListBean.Body>();
 	}
 
-//	@Override
-//	public boolean onKeyDown(int keyCode, KeyEvent event) {
-//		if (keyCode == KeyEvent.KEYCODE_BACK) {
-//			this.finish();
-//			overridePendingTransition(R.anim.popup_enter, R.anim.popup_exit);
-//			return true;
-//		}
-//
-//		return super.onKeyDown(keyCode, event);
-//	}
-//
-//	@Override  
-//	public boolean onTouchEvent(MotionEvent event) {  
-//		if (event.getAction() == MotionEvent.ACTION_DOWN && isOutOfBounds(this, event)) {  
-//			this.finish();
-//			overridePendingTransition(R.anim.popup_enter, R.anim.popup_exit);  
-//		}  
-//		return super.onTouchEvent(event);  
-//	}  
-//
-//	private boolean isOutOfBounds(Activity context, MotionEvent event) {  
-//		final int x = (int) event.getX();  
-//		final int y = (int) event.getY();  
-//		final int slop = ViewConfiguration.get(context).getScaledWindowTouchSlop();  
-//		final View decorView = context.getWindow().getDecorView();  
-//		return (x < -slop) || (y < -slop)|| (x > (decorView.getWidth() + slop))|| (y > (decorView.getHeight() + slop));  
-//	}
+	//	@Override
+	//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	//		if (keyCode == KeyEvent.KEYCODE_BACK) {
+	//			this.finish();
+	//			overridePendingTransition(R.anim.popup_enter, R.anim.popup_exit);
+	//			return true;
+	//		}
+	//
+	//		return super.onKeyDown(keyCode, event);
+	//	}
+	//
+	//	@Override  
+	//	public boolean onTouchEvent(MotionEvent event) {  
+	//		if (event.getAction() == MotionEvent.ACTION_DOWN && isOutOfBounds(this, event)) {  
+	//			this.finish();
+	//			overridePendingTransition(R.anim.popup_enter, R.anim.popup_exit);  
+	//		}  
+	//		return super.onTouchEvent(event);  
+	//	}  
+	//
+	//	private boolean isOutOfBounds(Activity context, MotionEvent event) {  
+	//		final int x = (int) event.getX();  
+	//		final int y = (int) event.getY();  
+	//		final int slop = ViewConfiguration.get(context).getScaledWindowTouchSlop();  
+	//		final View decorView = context.getWindow().getDecorView();  
+	//		return (x < -slop) || (y < -slop)|| (x > (decorView.getWidth() + slop))|| (y > (decorView.getHeight() + slop));  
+	//	}
 
 	@Override
 	protected void initView() {
 		setContentView(R.layout.foodlistbytogo);
 
+		backIv = (ImageView) findViewById(R.id.backIv);
 		titleTv = (TextView) this.findViewById(R.id.titleTv);
 		goodsLv = (UpRefreshListView) findViewById(R.id.goodsListView);
 	}
@@ -121,7 +121,8 @@ OnClickListener {
 	@Override
 	protected void setAttribute() {
 		titleTv.setText(fpName);
-//		get_root_view(FoodListByTogoActivity.this).setVisibility(View.GONE);
+		backIv.setOnClickListener(this);
+		//		get_root_view(FoodListByTogoActivity.this).setVisibility(View.GONE);
 		loginPreference = new LoginPreference(this);
 
 		doGetFoodListByTogo();
@@ -208,6 +209,9 @@ OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.backIv:
+			this.finish();
+			break;
 		default:
 			break;
 		}
@@ -258,7 +262,7 @@ OnClickListener {
 				LogUtil.d(TAG, "OnPaserComplete:" + bean.getHead());
 				if ("00".equals(bean.getHead().getResultCode())) {
 					mHandler.obtainMessage(MSG_DEL_COLLECT_SUCCESS, bean)
-							.sendToTarget();
+					.sendToTarget();
 				} else {
 					mHandler.obtainMessage(MSG_DEL_COLLECT_FAIL,
 							bean.getHead().getResultInfo()).sendToTarget();
@@ -270,7 +274,7 @@ OnClickListener {
 			}
 		}
 	};
-	
+
 	/**
 	 * 向服务器请求更新购物车 <br/>
 	 * 
@@ -544,7 +548,7 @@ OnClickListener {
 
 				bookingListAdapter.notifyDataSetChanged();
 
-//				get_root_view(FoodListByTogoActivity.this).setVisibility(View.VISIBLE);
+				//				get_root_view(FoodListByTogoActivity.this).setVisibility(View.VISIBLE);
 				break;
 			case MSG_GET_FOODLIST_BY_TOGO_FAIL:
 				Toast.makeText(FoodListByTogoActivity.this,
@@ -587,11 +591,11 @@ OnClickListener {
 
 				// 发送广播
 				sendBroadcast(intent3);
-				
+
 				if(foodList != null) {
 					foodList.clear();
 				}
-				
+
 				doGetFoodListByTogo();
 				break;
 			case MSG_ADD_COLLECT_FAIL:
@@ -602,17 +606,17 @@ OnClickListener {
 				Toast.makeText(FoodListByTogoActivity.this,
 						R.string.del_collect_success_string, Toast.LENGTH_SHORT)
 						.show();
-				
+
 				Intent intent4 = new Intent(
 						BookingFragment.UPDATE_LIST_ACTION_NAME);
 
 				// 发送广播
 				sendBroadcast(intent4);
-				
+
 				if(foodList != null) {
 					foodList.clear();
 				}
-				
+
 				doGetFoodListByTogo();
 				break;
 			case MSG_DEL_COLLECT_FAIL:

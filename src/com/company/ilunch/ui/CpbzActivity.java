@@ -1,9 +1,7 @@
 package com.company.ilunch.ui;
 
 import java.util.ArrayList;
-
 import org.json.JSONObject;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -21,7 +20,6 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-
 import com.company.ilunch.R;
 import com.company.ilunch.base.BaseActivity;
 import com.company.ilunch.bean.GetSTemplateListBean;
@@ -42,20 +40,22 @@ public class CpbzActivity extends BaseActivity implements OnClickListener {
 	private RelativeLayout cpbzRl;
 	private RadioGroup cpbzRg;
 	private Button btn_submit;
-	
+	private EditText bzEt;
+
 	private String Remark;
+	private String editRemark;
 	private ArrayList<GetSTemplateListBean.Body> stllDataList;
 
 	@Override
 	protected void initData() {
 		stllDataList = new ArrayList<GetSTemplateListBean.Body>();
-		
-		if (getIntent() != null) {
-			Bundle bundle = getIntent().getExtras();
-			if (bundle != null && bundle.containsKey("Remark")) {
-				Remark = bundle.getString("Remark");
-			}
-		}
+
+		// if (getIntent() != null) {
+		// Bundle bundle = getIntent().getExtras();
+		// if (bundle != null && bundle.containsKey("Remark")) {
+		// Remark = bundle.getString("Remark");
+		// }
+		// }
 	}
 
 	@Override
@@ -66,6 +66,7 @@ public class CpbzActivity extends BaseActivity implements OnClickListener {
 		cpbzRl = (RelativeLayout) findViewById(R.id.cpbzRl);
 		cpbzRg = (RadioGroup) findViewById(R.id.cpbzRg);
 		btn_submit = (Button) findViewById(R.id.btn_submit);
+		bzEt = (EditText) findViewById(R.id.bzEt);
 	}
 
 	@Override
@@ -84,7 +85,7 @@ public class CpbzActivity extends BaseActivity implements OnClickListener {
 			break;
 		case R.id.btn_submit:
 			Intent intent = new Intent();
-			intent.putExtra("Remark", Remark);
+			intent.putExtra("Remark", bzEt.getText().toString().trim());
 			CpbzActivity.this.setResult(1, intent);
 			CpbzActivity.this.finish();
 			break;
@@ -159,20 +160,20 @@ public class CpbzActivity extends BaseActivity implements OnClickListener {
 				}
 
 				addRadioBtns();
-				
-				if(!TextUtils.isEmpty(Remark) && cpbzRg.getChildCount()>0) {
-					for(int i=0;i<cpbzRg.getChildCount();i++) {
-						LinearLayout ll = (LinearLayout) cpbzRg.getChildAt(i);
-						for(int j=0;j<ll.getChildCount();j++) {
-							RadioButton rb = (RadioButton) ll.getChildAt(j);
-							
-							if(Remark.equals(rb.getText().toString())) {
-								rb.setChecked(true);
-								break;
-							}
-						}
-					}
-				}
+
+				// if(!TextUtils.isEmpty(Remark) && cpbzRg.getChildCount()>0) {
+				// for(int i=0;i<cpbzRg.getChildCount();i++) {
+				// LinearLayout ll = (LinearLayout) cpbzRg.getChildAt(i);
+				// for(int j=0;j<ll.getChildCount();j++) {
+				// RadioButton rb = (RadioButton) ll.getChildAt(j);
+				//
+				// if(Remark.equals(rb.getText().toString())) {
+				// rb.setChecked(true);
+				// break;
+				// }
+				// }
+				// }
+				// }
 				break;
 			case MSG_GET_STEMPLATE_LIST_FAIL:
 				Toast.makeText(CpbzActivity.this, (String) msg.obj,
@@ -210,7 +211,13 @@ public class CpbzActivity extends BaseActivity implements OnClickListener {
 
 			if (stllDataList.get(i).isIscheck()) {
 				rb.setChecked(true);
-				Remark = stllDataList.get(i).getRemark();
+				editRemark = bzEt.getText().toString().trim();
+				bzEt.setText(editRemark + stllDataList.get(i).getRemark());
+				try {
+					bzEt.setSelection(bzEt.length());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else {
 				rb.setChecked(false);
 			}
@@ -221,7 +228,7 @@ public class CpbzActivity extends BaseActivity implements OnClickListener {
 			rb.setTag(stllDataList.get(i));
 
 			ll.addView(rb);
-			
+
 			rb.setOnCheckedChangeListener(new BzOnCheckedListener(i));
 		}
 	}

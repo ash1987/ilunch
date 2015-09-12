@@ -561,5 +561,6 @@
     <string name="yc_address_string">用餐地址：%1$s</string>
     <string name="qc_address_string">取餐地址：%1$s</string>
     <string name="sc_address_string">送餐地址：%1$s</string>
+    <string name="public_string">%1$s出品</string>
     <string name="get_foodlist_by_togo_fail">获取列表失败</string>
 </resources>

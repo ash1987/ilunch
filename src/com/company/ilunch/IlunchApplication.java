@@ -19,7 +19,7 @@ import com.nostra13.universalimageloader.core.process.BitmapProcessor;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
 public class IlunchApplication extends Application {
-	public static String cartUcode = "0";//购物车临时编码
+	public static String cartUcode = "-1";//购物车临时编码
 	
 	@Override
 	public void onCreate() {
@@ -33,7 +33,7 @@ public class IlunchApplication extends Application {
 	public void onTerminate() {
 		super.onTerminate();
 		
-		cartUcode = "0";
+		cartUcode = "-1";
 	}
 
 	/**

@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.company.ilunch.R;
 import com.company.ilunch.bean.CommentBean.Body;
+import com.company.ilunch.utils.AndroidUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -36,12 +37,13 @@ public class MyCommentAdapter extends BaseAdapter {
 			Callback delCallback) {
 		this.mContext = mContext;
 		this.commentLists = commentLists;
-		this.callback = callback;
+		this.callback = delCallback;
 
+		this.imageLoader = ImageLoader.getInstance();
 		options = new DisplayImageOptions.Builder().cacheInMemory(true)
-				.showImageOnLoading(R.drawable.tab_home)
-				.showImageOnFail(R.drawable.tab_home)
-				.showImageForEmptyUri(R.drawable.tab_home).cacheOnDisc(true)
+				.showImageOnLoading(R.drawable.img_loading)
+				.showImageOnFail(R.drawable.img_loading)
+				.showImageForEmptyUri(R.drawable.img_loading).cacheOnDisc(true)
 				.resetViewBeforeLoading(true).considerExifParams(true)
 				.bitmapConfig(Bitmap.Config.RGB_565)
 				.imageScaleType(ImageScaleType.EXACTLY).build();
@@ -84,6 +86,10 @@ public class MyCommentAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) converView.getTag();
 		}
+		
+		imageLoader
+		.displayImage(AndroidUtils.getImgUrlOnServer(commentLists.get(position)
+				.getPicture()), holder.commentImage, options);
 		
 		holder.commentGoodName.setText(commentLists.get(position).getFoodName());
 		holder.commentContentTv.setText(commentLists.get(position).getComment());

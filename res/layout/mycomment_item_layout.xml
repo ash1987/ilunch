@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:background="@color/wheat"
-    android:paddingRight="-72dp" >
+    android:paddingRight="-62dp" >
 
     <RelativeLayout
         android:id="@+id/deleteRl"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:layout_width="62dp"
+        android:layout_height="62dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/btn_delete"

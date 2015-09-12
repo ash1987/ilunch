@@ -155,10 +155,12 @@ public class BookingListAdapter extends BaseAdapter {
 		}
 
 		holder.good_name_tv.setText(data.get(position).getFoodName());
+		
+		holder.good_mall_price_tv.setText(String.format(mContext
+				.getString(R.string.public_string), data.get(position)
+				.getName()));
 
-		holder.good_mall_price_tv.setText(data.get(position).getName());
-
-		holder.priceTv.setText("￥" + data.get(position).getPrice());
+		holder.priceTv.setText(data.get(position).getPrice());
 
 		holder.hasMaiTv.setText(String.format(mContext
 				.getString(R.string.ramain_num), data.get(position)

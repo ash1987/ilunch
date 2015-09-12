@@ -260,7 +260,7 @@ public class MainActivity extends BaseFragmentActivity {
 				touchTime = currentTime;// 记录第一次点击的时间
 			} else {
 				// 退出程序，关闭Activity并结束进程
-				IlunchApplication.cartUcode = "0";
+				IlunchApplication.cartUcode = "-1";
 				this.finish();
 			}
 			return true;

@@ -37,11 +37,25 @@
         android:textColor="@android:color/white"
         android:textSize="17sp" />
 
+    <EditText
+        android:id="@+id/bzEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleInclude"
+        android:background="@android:color/white"
+        android:gravity="top|left"
+        android:hint="给商家留言，可输入对商家的要求..."
+        android:maxLines="6"
+        android:minLines="6"
+        android:padding="8dp"
+        android:textColor="#666666"
+        android:textSize="15sp" />
+
     <RadioGroup
         android:id="@+id/cpbzRg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/titleInclude"
+        android:layout_below="@id/bzEt"
         android:layout_marginTop="10dp"
         android:orientation="vertical"
         android:paddingLeft="25dp"

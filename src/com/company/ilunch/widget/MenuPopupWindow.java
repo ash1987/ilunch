@@ -7,6 +7,8 @@ import com.company.ilunch.adapter.MenuPopupAdapter;
 import com.company.ilunch.bean.GetShopDataBean;
 import com.company.ilunch.bean.GetShopDataBean.Body;
 import com.company.ilunch.preferences.IlunchPreference;
+import com.company.ilunch.preferences.LoginPreference;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -24,12 +26,13 @@ public class MenuPopupWindow extends PopupWindow {
 	private View mMenuView;
 
 	private ArrayList<Body> list = new ArrayList<Body>();
-	
+
 	public interface Callback {
 		void clickResult(int position);
 	}
 
-	public MenuPopupWindow(Activity context, ArrayList<Body> bodyList, Callback callback) {
+	public MenuPopupWindow(Activity context, ArrayList<Body> bodyList,
+			Callback callback) {
 		super(context);
 
 		this.mContext = context;
@@ -60,7 +63,7 @@ public class MenuPopupWindow extends PopupWindow {
 		// 设置SelectPicPopupWindow弹出窗体可点击
 		this.setFocusable(true);
 		// 设置SelectPicPopupWindow弹出窗体动画效果
-//		this.setAnimationStyle(R.style.PopupAnimation);
+		// this.setAnimationStyle(R.style.PopupAnimation);
 		// // 实例化一个ColorDrawable颜色为半透明
 		ColorDrawable dw = new ColorDrawable(0xffffff);
 		// // 设置SelectPicPopupWindow弹出窗体的背景
@@ -69,34 +72,39 @@ public class MenuPopupWindow extends PopupWindow {
 
 	class ItemClickListener implements OnItemClickListener {
 		private Callback callback;
-		
+
 		public ItemClickListener(Callback callback) {
 			this.callback = callback;
 		}
-		
+
 		@Override
-		public void onItemClick(AdapterView parent, View view, int position, long id) {
+		public void onItemClick(AdapterView parent, View view, int position,
+				long id) {
 			callback.clickResult(position);
-			
+
 			MenuPopupWindow.this.dismiss();
 		}
 	}
 
 	private void initData() {
 		list.clear();
-		
+
 		Body allBody = new Body();
 		allBody.setClassname(mContext.getString(R.string.menu_all));
 		list.add(allBody);
-		
+
 		IlunchPreference iPreference = new IlunchPreference(mContext);
 		GetShopDataBean gsdBean = JSON.toJavaObject(
 				JSON.parseObject(iPreference.getShopData()),
 				GetShopDataBean.class);
 		list.addAll(gsdBean.getBody());
-		
-		Body scBody = new Body();
-		scBody.setClassname(mContext.getString(R.string.menu_sc));
-		list.add(scBody);
+
+		LoginPreference loginPreference = new LoginPreference(mContext);
+
+		if (loginPreference.getLoginState()) {
+			Body scBody = new Body();
+			scBody.setClassname(mContext.getString(R.string.menu_sc));
+			list.add(scBody);
+		}
 	}
 }

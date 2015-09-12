@@ -86,8 +86,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 
 			break;
 		case R.id.btn_layout:
-			IlunchApplication.cartUcode = "0";
-			IlunchApplication.cartUcode = UUID.randomUUID().toString();
+			IlunchApplication.cartUcode = "-1";
 			loginPreference.setLoginOut(SettingActivity.this);
 			finish();
 			break;

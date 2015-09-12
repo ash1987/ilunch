@@ -103,7 +103,7 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 	private TextView numTv;
 	private TextView totalNumTv;
 	private TextView totalPriceTv;
-	
+
 	private View tempView;
 
 	private ArrayList<Body> bodyList;// 菜品列表
@@ -114,7 +114,7 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 	private LoginPreference loginPreference;
 
 	private ArrayList<GetCartListBean.Body> cartListData;
-	
+
 	private String nowLocation;
 
 	@Override
@@ -165,18 +165,18 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 		mViewPager.setOnPageChangeListener(new MyPagerOnPageChangeListener());
 		locationRl.setOnClickListener(this);
 		backIv.setOnClickListener(this);
-		
+
 		tempView.setOnTouchListener(new OnTouchListener() {
-			
+
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				shopCartListView.setVisibility(View.GONE);
 				tempView.setVisibility(View.GONE);
-				
+
 				return false;
 			}
 		});
-		
+
 		scAdapter = new ShopCartListAdapter(this, cartListData,
 				new ShopCartListAdapter.Callback() {
 					@Override
@@ -219,6 +219,35 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 		totalNumTv.setVisibility(View.GONE);
 		totalPriceTv.setVisibility(View.GONE);
 
+		registerBoradcastReceiver();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		doGetCartList();
+
+		if (TextUtils.isEmpty(ilunchPerference.getMyLocationDs())) {
+			locationRl.setVisibility(View.GONE);
+		} else {
+			locationRl.setVisibility(View.VISIBLE);
+
+			locationTv.setText(ilunchPerference.getMyLocationCity()
+					+ ilunchPerference.getMyLocationQy()
+					+ ilunchPerference.getMyLocationDs());
+
+			if (!TextUtils.isEmpty(nowLocation)
+					&& !ilunchPerference.getMyLocationDs().equals(nowLocation)) {
+
+				Intent intent1 = new Intent(
+						BookingFragment.UPDATE_LIST_ACTION_NAME);
+
+				// 发送广播
+				sendBroadcast(intent1);
+			}
+		}
+		
 		IlunchPreference iPreference = new IlunchPreference(this);
 
 		if (TextUtils.isEmpty(iPreference.getShopData())) {
@@ -237,33 +266,6 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 				mHandler.sendEmptyMessage(MSG_SHOW_MENU_FAIL);
 			}
 		}
-
-		registerBoradcastReceiver();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		doGetCartList();
-
-		if (TextUtils.isEmpty(ilunchPerference.getMyLocationDs())) {
-			locationRl.setVisibility(View.GONE);
-		} else {
-			locationRl.setVisibility(View.VISIBLE);
-
-			locationTv.setText(ilunchPerference.getMyLocationCity()
-					+ ilunchPerference.getMyLocationQy()
-					+ ilunchPerference.getMyLocationDs());
-			
-			if(!TextUtils.isEmpty(nowLocation)&&!ilunchPerference.getMyLocationDs().equals(nowLocation)) {
-				
-				Intent intent1 = new Intent(BookingFragment.UPDATE_LIST_ACTION_NAME);
-				
-				// 发送广播
-				sendBroadcast(intent1);
-			}
-		}
 	}
 
 	@Override
@@ -279,15 +281,17 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 			return;
 		}
 		
+		mRadioGroup.removeAllViews();
+
 		RadioButton rb1 = new RadioButton(this);
-		rb1.setId(bodyList.size()+1);
+		rb1.setId(bodyList.size() + 1);
 		RadioGroup.LayoutParams params1 = new RadioGroup.LayoutParams(
 				bottomLine, LayoutParams.MATCH_PARENT);
 		rb1.setLayoutParams(params1);
 		Bitmap a1 = null;
 		rb1.setButtonDrawable(new BitmapDrawable(a1));
 		rb1.setChecked(true);
-		
+
 		rb1.setGravity(Gravity.CENTER);
 		rb1.setTextColor(Color.parseColor("#555555"));
 		if ("XLH".equals(AndroidUtils.getDencityType(this))) {
@@ -322,37 +326,44 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 			mRadioGroup.addView(rb);
 		}
 
-		RadioButton rb = new RadioButton(this);
-		rb.setId(bodyList.size());
-		RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
-				bottomLine, LayoutParams.MATCH_PARENT);
-		rb.setLayoutParams(params);
-		Bitmap a = null;
-		rb.setButtonDrawable(new BitmapDrawable(a));
-		rb.setChecked(false);
-		rb.setGravity(Gravity.CENTER);
-		rb.setPadding(AndroidUtils.dip2px(this, 3),
-				AndroidUtils.dip2px(this, 3), AndroidUtils.dip2px(this, 3),
-				AndroidUtils.dip2px(this, 3));
-		Drawable drawable = this.getResources().getDrawable(
-				R.drawable.menu_fav_icon1);
-		rb.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null,
-				drawable);
-		rb.setTag(null);
+		if (loginPreference.getLoginState()) {
+			RadioButton rb = new RadioButton(this);
+			rb.setId(bodyList.size());
+			RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
+					bottomLine, LayoutParams.MATCH_PARENT);
+			rb.setLayoutParams(params);
+			Bitmap a = null;
+			rb.setButtonDrawable(new BitmapDrawable(a));
+			rb.setChecked(false);
+			rb.setGravity(Gravity.CENTER);
+			rb.setPadding(AndroidUtils.dip2px(this, 3),
+					AndroidUtils.dip2px(this, 3), AndroidUtils.dip2px(this, 3),
+					AndroidUtils.dip2px(this, 3));
+			Drawable drawable = this.getResources().getDrawable(
+					R.drawable.menu_fav_icon1);
+			rb.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null,
+					null, drawable);
+			rb.setTag(null);
 
-		mRadioGroup.addView(rb);
+			mRadioGroup.addView(rb);
+		}
 	}
 
 	private void iniVariable() {
+		mViewPager.removeAllViews();
+		
 		ArrayList<Fragment> fragments = new ArrayList<Fragment>();
 
 		fragments.add(new BookingFragment(null, SalesMethod, "all"));
-		
+
 		for (int i = 0; i < bodyList.size(); i++) {
-			fragments.add(new BookingFragment(bodyList.get(i), SalesMethod, ""));
+			fragments
+					.add(new BookingFragment(bodyList.get(i), SalesMethod, ""));
 		}
 
-		fragments.add(new BookingFragment(null, SalesMethod, "sc"));
+		if (loginPreference.getLoginState()) {
+			fragments.add(new BookingFragment(null, SalesMethod, "sc"));
+		}
 
 		FragAdapter fAdapter = new FragAdapter(getSupportFragmentManager(),
 				mViewPager);
@@ -784,6 +795,12 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 
 					cartListData.clear();
 					cartListData.addAll(gclBean.getBody());
+				} else {
+					numTv.setVisibility(View.INVISIBLE);
+					totalNumTv.setVisibility(View.INVISIBLE);
+					totalPriceTv.setVisibility(View.INVISIBLE);
+					
+					cartListData.clear();
 				}
 
 				scAdapter.notifyDataSetChanged();
@@ -890,10 +907,10 @@ public class FoodListBaseActivity extends BaseFragmentActivity implements
 					});
 			mpw.showAsDropDown(menuIv);
 		} else if (v.getId() == R.id.shopCartRl) {
-			if(shopCartListView.getAdapter().getCount() == 0) {
+			if (shopCartListView.getAdapter().getCount() == 0) {
 				return;
 			}
-			
+
 			if (shopCartListView.isShown()) {
 				shopCartListView.setVisibility(View.GONE);
 				tempView.setVisibility(View.GONE);

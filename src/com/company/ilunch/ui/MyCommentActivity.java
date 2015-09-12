@@ -65,7 +65,7 @@ public class MyCommentActivity extends BaseActivity implements OnClickListener {
 				new Callback() {
 					@Override
 					public void deleItem(int pos) {
-						// doDelMyCollect(commentLists.get(pos));
+//						 doDelMyCollect(commentLists.get(pos));
 						commentListView.slideBack();
 					}
 				});
@@ -113,8 +113,7 @@ public class MyCommentActivity extends BaseActivity implements OnClickListener {
 			requestParams.put("UserId",
 					Integer.parseInt(loginPreference.getDataID()));
 			requestParams.put("Page", pageNo);
-//			requestParams.put("PageSize", pageSize);
-			 requestParams.put("TogoId", 811);
+			requestParams.put("TogoId", 839);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

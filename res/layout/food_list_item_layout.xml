@@ -8,15 +8,15 @@
 
     <ImageView
         android:id="@+id/good_iv"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
         android:scaleType="fitXY"
         android:src="@drawable/ic_launcher" />
 
     <RelativeLayout
         android:id="@+id/ContainerRl"
         android:layout_width="85dp"
-        android:layout_height="75dp"
+        android:layout_height="68dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" >
 
@@ -69,42 +69,21 @@
             android:layout_alignParentRight="true"
             android:clickable="true"
             android:src="@drawable/icon_heart00_s" />
-
-        <TextView
-            android:id="@+id/commentTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@id/favIv"
-            android:text="99"
-            android:textColor="#666666"
-            android:textSize="15sp" />
-
-        <ImageView
-            android:id="@+id/commentIv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@id/commentTv"
-            android:clickable="true"
-            android:padding="3dp"
-            android:src="@drawable/icon_comment" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="68dp"
         android:layout_toLeftOf="@id/ContainerRl"
         android:layout_toRightOf="@id/good_iv"
         android:orientation="horizontal"
-        android:weightSum="4" >
+        android:weightSum="5" >
 
         <RelativeLayout
             android:id="@+id/goodRl"
             android:layout_width="0.0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:clickable="true" >
 
             <TextView
@@ -131,7 +110,7 @@
                 android:singleLine="true"
                 android:text="星州大椰(喜盈店)"
                 android:textColor="@color/red"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/hasMaiTv"
@@ -142,33 +121,55 @@
                 android:gravity="left"
                 android:text="已售:38份"
                 android:textColor="#888888"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="0.0dp"
-            android:layout_height="75dp"
+            android:layout_height="68dp"
             android:layout_weight="1" >
 
             <TextView
-                android:id="@+id/priceTv"
-                android:layout_width="match_parent"
+                android:id="@+id/priceDesTv"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="￥20"
+                android:text="￥"
                 android:textColor="#ff830c"
-                android:textSize="14sp"
+                android:textSize="11sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/priceTv"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/priceTv"
-                android:layout_marginTop="6dp"
-                android:text="出品"
-                android:textColor="#888888"
-                android:textSize="13sp" />
+                android:layout_marginTop="2dp"
+                android:layout_toRightOf="@id/priceDesTv"
+                android:textColor="#ff830c"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/commentIv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:clickable="true"
+                android:padding="3dp"
+                android:src="@drawable/icon_comment" />
+
+            <TextView
+                android:id="@+id/commentTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/commentIv"
+                android:layout_marginRight="20dp"
+                android:layout_toRightOf="@id/commentIv"
+                android:text="99"
+                android:textColor="#666666"
+                android:textSize="14sp" />
         </RelativeLayout>
     </LinearLayout>
 

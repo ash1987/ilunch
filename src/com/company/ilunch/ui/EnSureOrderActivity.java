@@ -2,6 +2,8 @@ package com.company.ilunch.ui;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.UUID;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.content.Intent;
@@ -520,7 +522,7 @@ public class EnSureOrderActivity extends BaseActivity implements
 				orderBzTv.setText(String.format(getString(R.string.cpbe_desc),
 						Remark));
 
-				IlunchApplication.cartUcode = "0";
+				IlunchApplication.cartUcode = "-1";
 				break;
 			case MSG_SUBMIT_ORDER_FAIL:
 				Toast.makeText(EnSureOrderActivity.this, (String) msg.obj,
@@ -654,7 +656,7 @@ public class EnSureOrderActivity extends BaseActivity implements
 		case R.id.cpbzRl:
 			Intent cpbzIntent = new Intent(EnSureOrderActivity.this,
 					CpbzActivity.class);
-			cpbzIntent.putExtra("Remark", Remark);
+//			cpbzIntent.putExtra("Remark", Remark);
 			startActivityForResult(cpbzIntent, 1);
 			break;
 		default:

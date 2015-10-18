@@ -60,6 +60,10 @@ public class HttpUrlManager {
 	public final static String UPDATE_ORDER_STRING = "UpdateOrder";
 	//获取商家菜品列表
 	public final static String GET_FOODLIST_BY_TOGO_STRING = "GetFoodListByTogo";
+	//用户注册
+	public final static String USER_REGION_STRING = "UserRegion";
+	//获取密码
+	public final static String GET_PWD_STRING = "BackPassWord";
 	
 	
 	private final static int URL_FLAG = 0;// 0为正式地址，1为测试地址

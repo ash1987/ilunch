@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.company.ilunch.R;
@@ -58,13 +60,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	public final static int NOT_BIND_LOGIN = 0x04;// 未绑定
 	public final static int QQ_LOGIN_BIND = 4;
 	public final static int SINA_LOGIN_BIND = 3;
-	private RequestParams requestParams;// 请求参数封装的键值对
 	private LoginPreference loginPreference;
 
 	private LinearLayout backLl;// 返回
 	private EditText accountNameEdit;// 账号输入框
 	private EditText accountPwEdit;// 密码输入框
 	private Button loginBtn;// 立即登录按钮
+	private RelativeLayout quickLoginRl; //快捷登录按钮
+	private TextView registerTv; //注册
+	private TextView forgetTv; //忘记密码
 	private ImageView wechatIv;// 微信登录
 	private ImageView qqIv;// qq登录
 	private String uname;
@@ -73,7 +77,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void initData() {
-		requestParams = new RequestParams();
 		loginPreference = new LoginPreference(this);
 		configPlatforms();
 	}
@@ -85,6 +88,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		accountNameEdit = (EditText) this.findViewById(R.id.accountNameEdit);
 		accountPwEdit = (EditText) this.findViewById(R.id.accountPwEdit);
 		loginBtn = (Button) this.findViewById(R.id.loginBtn);
+		quickLoginRl = (RelativeLayout) this.findViewById(R.id.quickLoginRl);
+		registerTv = (TextView) this.findViewById(R.id.registerTv);
+		forgetTv = (TextView) this.findViewById(R.id.forgetTv);
 		wechatIv = (ImageView) this.findViewById(R.id.wechatIv);
 		qqIv = (ImageView) this.findViewById(R.id.qqIv);
 	}
@@ -94,9 +100,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		backLl.setVisibility(View.VISIBLE);
 		backLl.setOnClickListener(this);
 		loginBtn.setOnClickListener(this);
+		quickLoginRl.setOnClickListener(this);
+		registerTv.setOnClickListener(this);
+		forgetTv.setOnClickListener(this);
 		wechatIv.setOnClickListener(this);
 		qqIv.setOnClickListener(this);
-
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
 		if (!TextUtils.isEmpty(loginPreference.getUserName())) {
 			accountNameEdit.setText(loginPreference.getUserName());
 			accountNameEdit
@@ -128,6 +142,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			break;
 		case R.id.loginBtn:// 立即登录
 			loginInfoComplete();
+			break;
+		case R.id.quickLoginRl: //快捷登录
+			startActivity(new Intent(LoginActivity.this, QuickLoginActivity.class));
+			break;
+		case R.id.registerTv: //注册
+			startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+			break;
+		case R.id.forgetTv: //忘记密码
+			startActivity(new Intent(LoginActivity.this, ForgetPwdActivity.class));
 			break;
 		case R.id.qqIv:// QQ登录
 			login(SHARE_MEDIA.QQ);
@@ -325,7 +348,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private void toLogin(String uname, String password/* , int loginType */) {
 		showProgress(null, getString(R.string.toast_login_now));
 		LoginTask loginTask = new LoginTask();
-		requestParams.clear();
 		// switch (loginType) {
 		// case 0:// 手机登陆
 		// requestParams.add("mobile", uname);

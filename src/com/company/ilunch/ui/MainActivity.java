@@ -15,13 +15,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
-
 import com.company.ilunch.IlunchApplication;
 import com.company.ilunch.R;
 import com.company.ilunch.base.BaseFragmentActivity;
 import com.company.ilunch.fragment.FindingFragment;
 import com.company.ilunch.fragment.HomePageFragment;
-import com.company.ilunch.fragment.MyLocationDsFragment;
 import com.company.ilunch.fragment.UserFragment;
 import com.company.ilunch.preferences.IlunchPreference;
 import com.company.ilunch.utils.AndroidUtils;

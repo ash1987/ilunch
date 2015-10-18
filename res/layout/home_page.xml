@@ -59,25 +59,58 @@
             android:layout_marginBottom="8dp"
             android:src="@drawable/home_icon_book" />
 
-        <ImageView
-            android:id="@+id/dbIv"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:layout_below="@id/tempView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:src="@drawable/home_icon_pack" />
-
-        <TextView
-            android:id="@+id/dbDescTv"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/dbIv"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="8dp"
-            android:text="打包"
-            android:textColor="#cccccc"
-            android:textSize="13sp" />
+            android:layout_below="@id/tempView"
+            android:layout_marginTop="5dp" >
+
+            <View
+                android:id="@+id/tempView1"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_centerInParent="true" />
+
+            <ImageView
+                android:id="@+id/dbIv"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_marginRight="30dp"
+                android:layout_toLeftOf="@id/tempView1"
+                android:src="@drawable/home_icon_pack" />
+
+            <TextView
+                android:id="@+id/dbDescTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/dbIv"
+                android:layout_marginRight="61dp"
+                android:layout_marginTop="8dp"
+                android:layout_toLeftOf="@id/tempView1"
+                android:text="打包"
+                android:textColor="#cccccc"
+                android:textSize="13sp" />
+
+            <ImageView
+                android:id="@+id/wmIv"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@id/tempView1"
+                android:src="@drawable/home_icon_takeout" />
+
+            <TextView
+                android:id="@+id/wmDescTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/dbIv"
+                android:layout_marginLeft="61dp"
+                android:layout_marginTop="8dp"
+                android:layout_toRightOf="@id/tempView1"
+                android:text="外卖"
+                android:textColor="#cccccc"
+                android:textSize="13sp" />
+        </RelativeLayout>
     </RelativeLayout>
 
 </LinearLayout>

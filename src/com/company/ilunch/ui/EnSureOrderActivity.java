@@ -3,7 +3,6 @@ package com.company.ilunch.ui;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.UUID;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.content.Intent;
@@ -24,6 +23,7 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.alipay.android.app.sdk.AliPay;
 import com.company.ilunch.IlunchApplication;
 import com.company.ilunch.R;

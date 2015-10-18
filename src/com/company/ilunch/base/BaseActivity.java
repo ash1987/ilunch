@@ -7,8 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.widget.TextView;
-
 import com.company.ilunch.R;
 
 /**
@@ -53,6 +53,36 @@ public abstract class BaseActivity extends Activity {
 	// 初始化UI控件
 	protected abstract void setAttribute();
 
+	public interface CountTimer {
+
+		public void onTimeFinish();
+
+		public void onTimeTick(long millisUntilFinished);
+	}
+	
+	/* 定义一个倒计时的内部类 */
+	public class TimeCount extends CountDownTimer {
+
+		private CountTimer timer;
+
+		public TimeCount(CountTimer timer, long millisInFuture,
+				long countDownInterval) {
+			super(millisInFuture, countDownInterval);// 参数依次为总时长,和计时的时间间隔
+
+			this.timer = timer;
+		}
+
+		@Override
+		public void onFinish() {// 计时完毕时触发
+			timer.onTimeFinish();
+		}
+
+		@Override
+		public void onTick(long millisUntilFinished) {// 计时过程显示
+			timer.onTimeTick(millisUntilFinished);
+		}
+	}
+	
 	/**
 	 * 显示等待框
 	 * 

@@ -35,6 +35,7 @@ import com.company.ilunch.ui.BookingActivity;
 import com.company.ilunch.ui.LocationCityActivity;
 import com.company.ilunch.ui.MyLocationActivity;
 import com.company.ilunch.ui.TakePackageActivity;
+import com.company.ilunch.ui.WaimaiActivity;
 import com.company.ilunch.utils.LogUtil;
 import com.company.ilunch.widget.CustomDialog;
 import com.company.ilunch.bean.GetShopDataBean.Body;
@@ -56,6 +57,7 @@ public class HomePageFragment extends BaseFragment implements OnClickListener,
 
 	private ImageView dzIv;// 订座按钮
 	private ImageView dbIv;// 打包按钮
+	private ImageView wmIv;// 外卖按钮
 	private TextView userAddressTv;// 所在城市
 
 	private CustomDialog customDialog;
@@ -113,6 +115,7 @@ public class HomePageFragment extends BaseFragment implements OnClickListener,
 	private void initView(View view) {
 		dzIv = (ImageView) view.findViewById(R.id.dzIv);
 		dbIv = (ImageView) view.findViewById(R.id.dbIv);
+		wmIv = (ImageView) view.findViewById(R.id.wmIv);
 		userAddressTv = (TextView) view.findViewById(R.id.userAddressTv);
 	}
 
@@ -120,6 +123,7 @@ public class HomePageFragment extends BaseFragment implements OnClickListener,
 	private void setAttribute() {
 		dzIv.setOnClickListener(this);
 		dbIv.setOnClickListener(this);
+		wmIv.setOnClickListener(this);
 		userAddressTv.setOnClickListener(this);
 
 		// 定位
@@ -142,6 +146,10 @@ public class HomePageFragment extends BaseFragment implements OnClickListener,
 		case R.id.dbIv:// 打包
 			startActivity(new Intent(HomePageFragment.this.getActivity(),
 					TakePackageActivity.class));
+			break;
+		case R.id.wmIv:// 外卖
+			startActivity(new Intent(HomePageFragment.this.getActivity(),
+					WaimaiActivity.class));
 			break;
 		case R.id.userAddressTv:
 			startActivity(new Intent(HomePageFragment.this.getActivity(),

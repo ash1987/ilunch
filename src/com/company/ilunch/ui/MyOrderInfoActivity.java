@@ -64,7 +64,9 @@ public class MyOrderInfoActivity extends BaseActivity implements OnClickListener
 			orderTypeIv.setImageResource(R.drawable.home_icon_book);
 			orderTypeTv.setText(R.string.book_content_string);
 		} else {
-			
+			//外卖
+			orderTypeIv.setImageResource(R.drawable.home_icon_takeout);
+			orderTypeTv.setText(R.string.waimai_content_string);
 		}
 		
 		orderIdTv.setText(OrderId);
